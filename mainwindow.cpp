@@ -1,18 +1,33 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFont>
+#include <QIcon>
+#include <QStatusBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    current_file = "";  // current file name
+    changed = false;    // changed text
+
     ui->setupUi(this);
     this->setCentralWidget(ui->textEdit);
-    setWindowTitle("New Document - Textino");
+
     QFont font;
+    font.setPixelSize(18);
     font.setFamily("Consolas");
     ui->textEdit->setFont(font);
+
+    setWindowTitle("New Document - Textino");
+    //setWindowIcon(QIcon(":/Res/imgs/icon.png"));
+    setAcceptDrops(true);
+
+
 }
+
+
+
 
 MainWindow::~MainWindow()
 {
