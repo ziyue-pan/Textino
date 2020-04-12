@@ -11,5 +11,8 @@
         <file>imgs/save-as.png</file>
         <file>imgs/spell-check.png</file>
         <file>imgs/undo.png</file>
+        <file>imgs/exit.png</file>
+        <file>imgs/new.png</file>
+        <file>imgs/open.png</file>
     </qresource>
 </RCC>

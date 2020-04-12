@@ -1,5 +1,4 @@
 #include "Textino.h"
-
 #include <QApplication>
 #include <QFileInfo>
 

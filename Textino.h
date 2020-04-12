@@ -20,7 +20,7 @@ public:
 
 private:
     QPlainTextEdit main_editor;
-    QLabel cursor_label, status_label, app_label;
+    QLabel status_label, app_label;
     QString file_path;
     bool changed;
 

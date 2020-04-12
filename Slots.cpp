@@ -5,6 +5,7 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QMessageBox>
+#include <QFileDialog>
 
 void Textino::ActionCopy(){main_editor.copy();}
 void Textino::ActionCut(){main_editor.cut();}
@@ -24,19 +25,37 @@ void Textino::ActionChanged(){
 void Textino::ActionNew(){
     if(changed)
         SavePrevious();
-    else
+
+    if(!changed){
+        main_editor.clear();
+        changed = false;
+        file_path = nullptr;
         setWindowTitle("New document - Textino");
+    }
 }
+
 void Textino::ActionOpen(){
-
-
+    if(changed)
+        SavePrevious();
+    if(!changed){
+        QString open_path = ShowDialog(QFileDialog::AcceptOpen, "Open", ":img/imgs/icon.png");
+        OpenFile(open_path);
+    }
 }
-void Textino::ActionSave(){
 
+void Textino::ActionSave(){
+    QString save_path = SaveFile(file_path, "Save");
+    if(save_path!="")
+        file_path = save_path;
 }
 void Textino::ActionSaveAs(){
-
+    QString save_path = SaveFile(nullptr, "Save As");
+    if(save_path!="")
+        file_path = save_path;
 }
 void Textino::ActionExit(){
-
+    if(changed)
+        SavePrevious();
+    if(!changed)
+        close();
 }

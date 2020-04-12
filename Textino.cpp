@@ -87,11 +87,6 @@ void Textino::CreateStatusBar(){
     status_label.setText("length: " + QString::number(0) + "    lines: " + QString::number(1));
     status_bar->addPermanentWidget(&status_label);
 
-    cursor_label.setMinimumWidth(150);
-    cursor_label.setAlignment(Qt::AlignCenter);
-    cursor_label.setText("Ln: " + QString::number(1) + "    Col: " + QString::number(1));
-    status_bar->addPermanentWidget(&cursor_label);
-
     app_label.setMinimumWidth(150);
     app_label.setAlignment(Qt::AlignCenter);
     app_label.setText("Textino");
@@ -116,23 +111,36 @@ void Textino::CreateAction(QAction*& action, QWidget* parent, QString instance, 
 }
 
 QString Textino::SaveFile(QString path, QString title){
-    QString text = path;
+    QString save_path = path;
     if(path=="")
-        text=ShowDialog(QFileDialog::AcceptSave, title, ":/img/imgs/icon.png");
-    if(text != ""){
-        QFile file(text);
+        save_path=ShowDialog(QFileDialog::AcceptSave, title, ":/img/imgs/icon.png");
+    if(save_path != ""){
+        QFile file(save_path);
         if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
             QTextStream file_out(&file);
             file_out << main_editor.toPlainText();
             file.close();
-            setWindowTitle(text + " - Textino");
+            setWindowTitle(save_path + " - Textino");
             changed = false;
-        }
-        else
-            ShowMessage(true, QString("Fail to save text!\n\n") + "\"" + text + "\"");
+        } else
+            ShowMessage(true, QString("Fail to save text!\n") + "\"" + save_path + "\"");
     }
-    return text;
+    return save_path;
 }
+
+void Textino::OpenFile(QString open_path){
+    QFile file(open_path);
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream instream(&file);
+        main_editor.setPlainText(instream.readAll());
+        file.close();
+        file_path = open_path;
+        changed = false;
+        setWindowTitle(file_path+" - Textino");
+    }else
+        ShowMessage(true, QString("Fail to open file"));
+}
+
 
 QString Textino::ShowDialog(QFileDialog::AcceptMode mode, QString title, QString icon_path){
     QFileDialog dialog(this);
@@ -190,8 +198,9 @@ void Textino::SavePrevious(){
     int chioce = ShowMessage(false, QString("Want to save as\n")+"\""+this_file+"\" ?");
     if(chioce==QMessageBox::Yes)
         SaveFile(file_path, "Save");
-    else if(chioce==QMessageBox::No)
+    else if(chioce==QMessageBox::No){
         changed = false;
+    }
 }
 
 
