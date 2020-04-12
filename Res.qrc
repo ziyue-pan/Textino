@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>imgs/about.png</file>
+        <file>imgs/copy.png</file>
+        <file>imgs/cut.png</file>
+        <file>imgs/dark-mode.png</file>
+        <file>imgs/icon.png</file>
+        <file>imgs/paste.png</file>
+        <file>imgs/redo.png</file>
+        <file>imgs/save.png</file>
+        <file>imgs/save-as.png</file>
+        <file>imgs/spell-check.png</file>
+        <file>imgs/undo.png</file>
+    </qresource>
+</RCC>
