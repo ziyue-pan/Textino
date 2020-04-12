@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QFile>
+#include <QLabel>
 #include <QFileDialog>
 #include <QTextStream>
 #include <QMessageBox>
@@ -20,24 +21,18 @@ public:
     ~MainWindow();
 
 private slots:
-
     void on_actionNew_triggered();
-
     void on_actionSave_As_triggered();
-
     void on_actionCopy_triggered();
-
     void on_actionPaste_triggered();
-
     void on_actionCut_triggered();
-
     void on_actionUndo_triggered();
-
     void on_actionRedo_triggered();
 
 private:
     Ui::MainWindow *ui;
     QString current_file = "";
     bool changed;
+    QLabel status_label, cursor_label, app_label;
 };
 #endif // MAINWINDOW_H

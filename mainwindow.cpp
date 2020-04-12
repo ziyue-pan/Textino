@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFont>
 #include <QIcon>
+#include <QLabel>
 #include <QStatusBar>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,8 +24,28 @@ MainWindow::MainWindow(QWidget *parent)
     //setWindowIcon(QIcon(":/Res/imgs/icon.png"));
     setAcceptDrops(true);
 
+    QStatusBar* status_bar=statusBar();
 
+    status_bar->addPermanentWidget(new QLabel());
+    setMinimumWidth(150);
+    status_label.setMinimumWidth(150);
+    status_label.setAlignment(Qt::AlignCenter);
+    status_label.setText("length: "+QString::number(0)+
+                         "   lines: "+QString::number(1));
+    status_bar->addPermanentWidget(&status_label);
+
+    cursor_label.setMinimumWidth(150);
+    cursor_label.setAlignment(Qt::AlignCenter);
+    cursor_label.setText("Ln: " + QString::number(1) + "    Col: " + QString::number(1));
+    status_bar->addPermanentWidget(&cursor_label);
+
+    app_label.setText("Textino");
+    app_label.setMinimumWidth(150);
+    app_label.setAlignment(Qt::AlignCenter);
+    status_bar->addPermanentWidget(&app_label);
 }
+
+
 
 
 
@@ -57,27 +78,8 @@ void MainWindow::on_actionSave_As_triggered()
     file.close();
 }
 
-void MainWindow::on_actionCopy_triggered()
-{
-    ui->textEdit->copy();
-}
-
-void MainWindow::on_actionPaste_triggered()
-{
-    ui->textEdit->paste();
-}
-
-void MainWindow::on_actionCut_triggered()
-{
-    ui->textEdit->cut();
-}
-
-void MainWindow::on_actionUndo_triggered()
-{
-    ui->textEdit->undo();
-}
-
-void MainWindow::on_actionRedo_triggered()
-{
-    ui->textEdit->redo();
-}
+void MainWindow::on_actionCopy_triggered() { ui->textEdit->copy(); }
+void MainWindow::on_actionPaste_triggered() { ui->textEdit->paste(); }
+void MainWindow::on_actionCut_triggered() { ui->textEdit->cut(); }
+void MainWindow::on_actionUndo_triggered() { ui->textEdit->undo(); }
+void MainWindow::on_actionRedo_triggered() { ui->textEdit->redo(); }
