@@ -59,3 +59,16 @@ void Textino::ActionExit(){
     if(!changed)
         close();
 }
+
+void Textino::ActionHighlight(){
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    QTextEdit::ExtraSelection selection;
+    QColor lineColor = QColor(Qt::green).lighter(160);
+
+    selection.format.setBackground(lineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = main_editor.textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+    main_editor.setExtraSelections(extraSelections);
+}

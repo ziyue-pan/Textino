@@ -20,7 +20,7 @@ public:
 
 private:
     QPlainTextEdit main_editor;
-    QLabel status_label, app_label;
+    QLabel status_label;
     QString file_path;
     bool changed;
 
@@ -30,7 +30,7 @@ private:
     void CreateMainEditor();
 
     void OpenFile(QString open_path);
-    void CloseEvent(QCloseEvent* close_event);
+    void closeEvent(QCloseEvent* event);
     void DragEnterEvent(QDragEnterEvent* drag_event);
     void DropEvent(QDropEvent* drop_event);
     void SavePrevious();
@@ -51,6 +51,7 @@ private slots:
     void ActionUndo();
     void ActionRedo();
 
+    void ActionHighlight();
     void ActionCursor();
     void ActionChanged();
 };

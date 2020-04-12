@@ -86,11 +86,6 @@ void Textino::CreateStatusBar(){
     status_label.setAlignment(Qt::AlignCenter);
     status_label.setText("length: " + QString::number(0) + "    lines: " + QString::number(1));
     status_bar->addPermanentWidget(&status_label);
-
-    app_label.setMinimumWidth(150);
-    app_label.setAlignment(Qt::AlignCenter);
-    app_label.setText("Textino");
-    status_bar->addPermanentWidget(&app_label);
 }
 
 void Textino::CreateMainEditor(){
@@ -101,7 +96,10 @@ void Textino::CreateMainEditor(){
     setCentralWidget(&main_editor);
     connect(&main_editor, SIGNAL(textChanged()), this, SLOT(ActionChanged()));
     connect(&main_editor, SIGNAL(cursorPositionChanged()), this, SLOT(ActionCursor()));
+    connect(&main_editor, SIGNAL(cursorPositionChanged()), this, SLOT(ActionHighlight()));
+    ActionHighlight();
 }
+
 
 
 void Textino::CreateAction(QAction*& action, QWidget* parent, QString instance, int short_cut, QString icon_path){
@@ -194,8 +192,8 @@ int Textino::ShowMessage(bool error, QString text){
 }
 
 void Textino::SavePrevious(){
-    QString this_file = (file_path!="")?file_path:"Untitled";
-    int chioce = ShowMessage(false, QString("Want to save as\n")+"\""+this_file+"\" ?");
+    QString this_file = file_path;
+    int chioce = ShowMessage(false, QString("Want to save this file?"));
     if(chioce==QMessageBox::Yes)
         SaveFile(file_path, "Save");
     else if(chioce==QMessageBox::No){
@@ -203,4 +201,13 @@ void Textino::SavePrevious(){
     }
 }
 
+void Textino::closeEvent(QCloseEvent* event){
+    if(changed)
+        SavePrevious();
+
+    if(!changed)
+        event->accept();
+    else
+        event->ignore();
+}
 
