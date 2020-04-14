@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     Slots.cpp \
     main.cpp \
-    Textino.cpp
+    Textino.cpp \
+    PlainTextEdit.cpp
 
 HEADERS += \
-    Textino.h
+    Textino.h \
+    PlainTextEdit.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -25,7 +25,7 @@ Textino::Textino(QWidget *parent)
     setAcceptDrops(true);
 
     QFont font;
-    font.setFamily("Consolas");
+    font.setFamily("YaHei Consolas Hybrid");
     font.setPixelSize(18);
     main_editor.setFont(font);
     resize(800, 600);
@@ -34,7 +34,6 @@ Textino::Textino(QWidget *parent)
 Textino::~Textino()
 {
 }
-
 
 void Textino::CreateMenuBar(){
     QMenuBar* menu_bar = menuBar();

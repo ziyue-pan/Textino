@@ -6,7 +6,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QAction>
-#include <QPlainTextEdit>
+#include "PlainTextEdit.h"
 #include <QString>
 #include <QFileDialog>
 
@@ -19,7 +19,7 @@ public:
     ~Textino();
 
 private:
-    QPlainTextEdit main_editor;
+    PlainTextEdit main_editor;
     QLabel status_label;
     QString file_path;
     bool changed;
@@ -30,7 +30,7 @@ private:
     void CreateMainEditor();
 
     void OpenFile(QString open_path);
-    void closeEvent(QCloseEvent* event);
+
     void DragEnterEvent(QDragEnterEvent* drag_event);
     void DropEvent(QDropEvent* drop_event);
     void SavePrevious();
@@ -54,5 +54,9 @@ private slots:
     void ActionHighlight();
     void ActionCursor();
     void ActionChanged();
+
+protected:
+    void closeEvent(QCloseEvent* event);
+
 };
 #endif // TEXTINO_H
