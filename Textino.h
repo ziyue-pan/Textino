@@ -41,9 +41,9 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-    void newFile();
-    void open();
-    bool save();
+    void NewFile();
+    void Open();
+    bool Save();
     bool SaveAs();
     void About();
     void Modified();

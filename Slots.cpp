@@ -26,6 +26,44 @@
 
 #include "Textino.h"
 
+
+void Textino::closeEvent(QCloseEvent *event)
+{
+    if (MaybeSave()) {
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+void Textino::NewFile()
+{
+    if (MaybeSave()) {
+        main_editor->clear();
+        SetCurrentFile("");
+    }
+}
+
+void Textino::Open()
+{
+    if (MaybeSave()) {
+        QString file_name = QFileDialog::getOpenFileName(this);
+        if (!file_name.isEmpty())
+            LoadFile(file_name);
+    }
+}
+
+bool Textino::Save()
+{
+    if (current_file.isEmpty()) {
+        return SaveAs();
+    } else {
+        return SaveFile(current_file);
+    }
+}
+
+
+
 void Textino::Modified()
 {
     setWindowModified(main_editor->isModified());

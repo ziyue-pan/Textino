@@ -2,11 +2,18 @@
 
 This is an extremely light text editor supporting the basic text editing functionalities.
 
-<img src="./intro-images/1.png" width="45%" height="45%">                               <img src="./intro-images/2.png" width="45%" height="45%">
+<img src="./intro-images/intro.gif">
 
 
 
 ---
+
+
+
+### Requirement
+
+* Qt
+* QScintilla2
 
 
 

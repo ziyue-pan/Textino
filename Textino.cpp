@@ -56,40 +56,6 @@ Textino::Textino()
     SetCurrentFile("");
 }
 
-void Textino::closeEvent(QCloseEvent *event)
-{
-    if (MaybeSave()) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void Textino::newFile()
-{
-    if (MaybeSave()) {
-        main_editor->clear();
-        SetCurrentFile("");
-    }
-}
-
-void Textino::open()
-{
-    if (MaybeSave()) {
-        QString file_name = QFileDialog::getOpenFileName(this);
-        if (!file_name.isEmpty())
-            LoadFile(file_name);
-    }
-}
-
-bool Textino::save()
-{
-    if (current_file.isEmpty()) {
-        return SaveAs();
-    } else {
-        return SaveFile(current_file);
-    }
-}
 
 
 
@@ -98,17 +64,17 @@ void Textino::CreateActions()
     new_act = new QAction(QIcon(":/imgs/new.png"), tr("&New"), this);
     new_act->setShortcut(tr("Ctrl+N"));
     new_act->setStatusTip(tr("Create a new file"));
-    connect(new_act, SIGNAL(triggered()), this, SLOT(newFile()));
+    connect(new_act, SIGNAL(triggered()), this, SLOT(NewFile()));
 
     open_act = new QAction(QIcon(":/imgs/open.png"), tr("&Open..."), this);
     open_act->setShortcut(tr("Ctrl+O"));
     open_act->setStatusTip(tr("Open an existing file"));
-    connect(open_act, SIGNAL(triggered()), this, SLOT(open()));
+    connect(open_act, SIGNAL(triggered()), this, SLOT(Open()));
 
     save_act = new QAction(QIcon(":/imgs/save.png"), tr("&Save"), this);
     save_act->setShortcut(tr("Ctrl+S"));
     save_act->setStatusTip(tr("Save the document to disk"));
-    connect(save_act, SIGNAL(triggered()), this, SLOT(save()));
+    connect(save_act, SIGNAL(triggered()), this, SLOT(Save()));
 
     save_as_act = new QAction(QIcon(":/imgs/save-as.png"), tr("Save &As..."), this);
     save_as_act->setShortcut(tr("Ctrl+Shift+S"));
@@ -219,7 +185,7 @@ bool Textino::MaybeSave()
                      QMessageBox::No,
                      QMessageBox::Cancel | QMessageBox::Escape);
         if (ret == QMessageBox::Yes)
-            return save();
+            return Save();
         else if (ret == QMessageBox::Cancel)
             return false;
     }
