@@ -1,34 +1,18 @@
-/****************************************************************************
-**
-** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
-**
-** This file is part of the example classes of the Qt Toolkit.
-**
-** Licensees holding a valid Qt License Agreement may use this file in
-** accordance with the rights, responsibilities and obligations
-** contained therein.  Please consult your licensing agreement or
-** contact sales@trolltech.com if any conditions of this licensing
-** agreement are not clear to you.
-**
-** Further information about Qt licensing is available at:
-** http://www.trolltech.com/products/qt/licensing.html or by
-** contacting info@trolltech.com.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
-****************************************************************************/
-
+/*
+ * Created Date: Friday, June 5th 2020, 3:34:39 pm
+ * Author: Raymond Rhino
+ * 
+ * Copyright (c) 2020 Textino
+ */
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
 #include <Qsci/qscilexer.h>
-#include <Qsci/qsciapis.h>
 
-class QAction;
+class QAction;      
 class QMenu;
-class QsciScintilla;
+class QsciScintilla;    // qscintilla class
 
 class Textino : public QMainWindow
 {
@@ -38,39 +22,39 @@ public:
     Textino();
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);    // overide closeEvent
 
 private slots:
-    void NewFile();
-    void Open();
-    bool Save();
-    bool SaveAs();
-    void About();
-    void Modified();
+    void NewFile();     // new file
+    void Open();        // open current file
+    bool Save();        // save file
+    bool SaveAs();      // save as another file
+    void About();       // about info
+    void Modified();    // text had been modified
 
 private:
-    void CreateActions();
-    void CreateMenus();
-    void CreateToolBars();
-    void CreateStatusBar();
-    void CreateLexer();
-    bool MaybeSave();
-    void LoadFile(const QString &file_name);
-    bool SaveFile(const QString &file_name);
-    void SetCurrentFile(const QString &file_name);
-    QString GetFileName(const QString &file_name);
+    void CreateActions();   // create actions
+    void CreateMenus();     // create menus
+    void CreateToolBars();  // create tool bar
+    void CreateStatusBar(); // create status bar
+    void CreateLexer();     // create lexer
+    bool MaybeSave();       // modified but unsaved
+    void LoadFile(const QString &file_name);        // load file
+    bool SaveFile(const QString &file_name);        // save file
+    void SetCurrentFile(const QString &file_name);  // set file path
+    QString GetFileName(const QString &file_name);  // get the file name
 
-    QsciScintilla *main_editor;
-    QString current_file;
-    QsciLexer *text_lexer;
+    QsciScintilla *main_editor; // main editor
+    QString current_file;       // current file path
+    QsciLexer *text_lexer;      // current language lexer
 
-    QMenu *file_menu;
+    QMenu *file_menu;           // menus
     QMenu *edit_menu;
     QMenu *help_menu;
-    QToolBar *file_tool_bar;
+    QToolBar *file_tool_bar;    // tool bars
     QToolBar *edit_tool_bar;
     QToolBar *help_tool_bar;
-    QAction *new_act;
+    QAction *new_act;           // actions
     QAction *open_act;
     QAction *save_act;
     QAction *save_as_act;
