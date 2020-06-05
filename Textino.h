@@ -1,62 +1,86 @@
-#ifndef TEXTINO_H
-#define TEXTINO_H
+/****************************************************************************
+**
+** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** Licensees holding a valid Qt License Agreement may use this file in
+** accordance with the rights, responsibilities and obligations
+** contained therein.  Please consult your licensing agreement or
+** contact sales@trolltech.com if any conditions of this licensing
+** agreement are not clear to you.
+**
+** Further information about Qt licensing is available at:
+** http://www.trolltech.com/products/qt/licensing.html or by
+** contacting info@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QLabel>
-#include <QMenu>
-#include <QMenuBar>
-#include <QAction>
-#include "PlainTextEdit.h"
-#include <QString>
-#include <QFileDialog>
+#include <Qsci/qscilexer.h>
+#include <Qsci/qsciapis.h>
+
+class QAction;
+class QMenu;
+class QsciScintilla;
 
 class Textino : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Textino(QWidget *parent = nullptr);
-    ~Textino();
-
-private:
-    PlainTextEdit main_editor;
-    QLabel status_label;
-    QString file_path;
-    bool changed;
-
-    void CreateMenuBar();
-    void CreateAction(QAction*& action, QWidget* parent, QString instence, int short_cut, QString icon_path);
-    void CreateStatusBar();
-    void CreateMainEditor();
-
-    void OpenFile(QString open_path);
-
-    void DragEnterEvent(QDragEnterEvent* drag_event);
-    void DropEvent(QDropEvent* drop_event);
-    void SavePrevious();
-    QString SaveFile(QString path, QString title);
-    int ShowMessage(bool error, QString text);
-    QString ShowDialog(QFileDialog::AcceptMode mode, QString title, QString icon_path);
-
-private slots:
-    void ActionNew();
-    void ActionOpen();
-    void ActionSave();
-    void ActionSaveAs();
-    void ActionExit();
-
-    void ActionCopy();
-    void ActionCut();
-    void ActionPaste();
-    void ActionUndo();
-    void ActionRedo();
-
-    void ActionHighlight();
-    void ActionCursor();
-    void ActionChanged();
+    Textino();
 
 protected:
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent *event);
 
+private slots:
+    void newFile();
+    void open();
+    bool save();
+    bool SaveAs();
+    void About();
+    void Modified();
+
+private:
+    void CreateActions();
+    void CreateMenus();
+    void CreateToolBars();
+    void CreateStatusBar();
+    void CreateLexer();
+    bool MaybeSave();
+    void LoadFile(const QString &file_name);
+    bool SaveFile(const QString &file_name);
+    void SetCurrentFile(const QString &file_name);
+    QString GetFileName(const QString &file_name);
+
+    QsciScintilla *main_editor;
+    QString current_file;
+    QsciLexer *text_lexer;
+
+    QMenu *file_menu;
+    QMenu *edit_menu;
+    QMenu *help_menu;
+    QToolBar *file_tool_bar;
+    QToolBar *edit_tool_bar;
+    QToolBar *help_tool_bar;
+    QAction *new_act;
+    QAction *open_act;
+    QAction *save_act;
+    QAction *save_as_act;
+    QAction *exit_act;
+    QAction *cut_act;
+    QAction *copy_act;
+    QAction *paste_act;
+    QAction *about_act;
+    QAction *redo_act;
+    QAction *undo_act;
 };
-#endif // TEXTINO_H
+
+#endif

@@ -1,212 +1,350 @@
-#include "Textino.h"
+#include <QAction>
+#include <QApplication>
+#include <QCloseEvent>
+#include <QFile>
+#include <QFileInfo>
+#include <QFileDialog>
 #include <QIcon>
 #include <QMenu>
-#include <QAction>
 #include <QMenuBar>
-#include <QStatusBar>
 #include <QMessageBox>
-#include <QFileDialog>
+#include <QPoint>
+#include <QSettings>
+#include <QSize>
+#include <QStatusBar>
 #include <QTextStream>
+#include <QToolBar>
 
+#include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerjava.h>
+#include <Qsci/qscilexerjavascript.h>
+#include <Qsci/qscilexerpython.h>
+#include <Qsci/qscilexerverilog.h>
+#include <Qsci/qscilexersql.h>
+#include <Qsci/qsciapis.h>
 
-Textino::Textino(QWidget *parent)
-    : QMainWindow(parent)
+#include "Textino.h"
+
+Textino::Textino()
 {
-    file_path = "";
-    changed = false;
+    main_editor = new QsciScintilla;
+    setCentralWidget(main_editor);
 
-
-    CreateMenuBar();
+    CreateActions();
+    CreateMenus();
+    CreateToolBars();
     CreateStatusBar();
-    CreateMainEditor();
 
-    setWindowTitle("New document - Textino");
-    setWindowIcon(QIcon(":img/imgs/icon.png"));
-    setAcceptDrops(true);
+    connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));
 
-    QFont font;
-    font.setFamily("YaHei Consolas Hybrid");
-    font.setPixelSize(18);
-    main_editor.setFont(font);
+    main_editor->setMarginType(0, QsciScintilla::NumberMargin);
+    main_editor->setMarginType(0, QsciScintilla::NumberMargin);
+    main_editor->setMarginWidth(0,20);
+    main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE,QsciScintilla::SC_CP_UTF8);
+    main_editor->setIndentationGuides(QsciScintilla::SC_IV_LOOKBOTH);
+    main_editor->setCaretLineVisible(true);
+    QColor line_color = QColor(Qt::green).lighter(180);
+    main_editor->setCaretLineBackgroundColor(line_color);
+
+    main_editor->setWrapMode(QsciScintilla::WrapWord);
+    setWindowIcon(QIcon(":/imgs/icon.png"));
     resize(800, 600);
+    QFont font;
+    font.setPointSize(13);
+    main_editor->setFont(font);
+    SetCurrentFile("");
 }
 
-Textino::~Textino()
+void Textino::closeEvent(QCloseEvent *event)
 {
-}
-
-void Textino::CreateMenuBar(){
-    QMenuBar* menu_bar = menuBar();
-    QMenu* menu_file = new QMenu("File", menu_bar);
-    QMenu* menu_edit = new QMenu("Edit", menu_bar);
-    QAction* action = nullptr;
-
-    CreateAction(action, menu_file, "New", Qt::CTRL+Qt::Key_N, ":img/imgs/new.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionNew()));
-    menu_file->addAction(action);
-    CreateAction(action, menu_file, "Open", Qt::CTRL+Qt::Key_O, ":img/imgs/open.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionOpen()));
-    menu_file->addAction(action);
-    CreateAction(action, menu_file, "Save", Qt::CTRL+Qt::Key_S, ":img/imgs/save.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionSave()));
-    menu_file->addAction(action);
-    CreateAction(action, menu_file, "Save As", Qt::CTRL+Qt::SHIFT+Qt::Key_S, ":img/imgs/save-as.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionSaveAs()));
-    menu_file->addAction(action);
-    menu_file->addSeparator();
-    CreateAction(action, menu_file, "Exit", Qt::CTRL+Qt::Key_W, ":img/imgs/exit.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionExit()));
-    menu_file->addAction(action);
-    
-    CreateAction(action, menu_edit, "Copy", Qt::CTRL+Qt::Key_C, ":img/imgs/copy.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionCopy()));
-    menu_edit->addAction(action);
-    CreateAction(action, menu_edit, "Cut", Qt::CTRL+Qt::Key_X, ":img/imgs/cut.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionCut()));
-    menu_edit->addAction(action);
-    CreateAction(action, menu_edit, "Paste", Qt::CTRL+Qt::Key_V, ":img/imgs/paste.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionPaste()));
-    menu_edit->addAction(action);
-    CreateAction(action, menu_edit, "Undo", Qt::CTRL+Qt::Key_Z, ":img/imgs/undo.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionUndo()));
-    menu_edit->addAction(action);
-    CreateAction(action, menu_edit, "Redo", Qt::CTRL+Qt::SHIFT+Qt::Key_Z, ":img/imgs/redo.png");
-    connect(action, SIGNAL(triggered()), this, SLOT(ActionRedo()));
-    menu_edit->addAction(action);
-
-    menu_bar->addMenu(menu_file);
-    menu_bar->addMenu(menu_edit);
-}
-
-void Textino::CreateStatusBar(){
-    QStatusBar* status_bar = statusBar();
-    
-    status_label.setMinimumWidth(150);
-    status_label.setAlignment(Qt::AlignCenter);
-    status_label.setText("length: " + QString::number(0) + "    lines: " + QString::number(1));
-    status_bar->addPermanentWidget(&status_label);
-}
-
-void Textino::CreateMainEditor(){
-    QPalette palette = main_editor.palette();
-    main_editor.setPalette(palette);
-    main_editor.setParent(this);
-    main_editor.setAcceptDrops(false);
-    setCentralWidget(&main_editor);
-    connect(&main_editor, SIGNAL(textChanged()), this, SLOT(ActionChanged()));
-    connect(&main_editor, SIGNAL(cursorPositionChanged()), this, SLOT(ActionCursor()));
-    connect(&main_editor, SIGNAL(cursorPositionChanged()), this, SLOT(ActionHighlight()));
-    ActionHighlight();
-}
-
-
-
-void Textino::CreateAction(QAction*& action, QWidget* parent, QString instance, int short_cut, QString icon_path){
-    action = new QAction(instance, parent);
-    action->setShortcut(QKeySequence(short_cut));
-    action->setIcon(QIcon(icon_path));
-}
-
-QString Textino::SaveFile(QString path, QString title){
-    QString save_path = path;
-    if(path=="")
-        save_path=ShowDialog(QFileDialog::AcceptSave, title, ":/img/imgs/icon.png");
-    if(save_path != ""){
-        QFile file(save_path);
-        if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
-            QTextStream file_out(&file);
-            file_out << main_editor.toPlainText();
-            file.close();
-            setWindowTitle(save_path + " - Textino");
-            changed = false;
-        } else
-            ShowMessage(true, QString("Fail to save text!\n") + "\"" + save_path + "\"");
+    if (MaybeSave()) {
+        event->accept();
+    } else {
+        event->ignore();
     }
-    return save_path;
 }
 
-void Textino::OpenFile(QString open_path){
-    QFile file(open_path);
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QTextStream instream(&file);
-        main_editor.setPlainText(instream.readAll());
-        file.close();
-        file_path = open_path;
-        changed = false;
-        setWindowTitle(file_path+" - Textino");
-    }else
-        ShowMessage(true, QString("Fail to open file"));
-}
-
-
-QString Textino::ShowDialog(QFileDialog::AcceptMode mode, QString title, QString icon_path){
-    QFileDialog dialog(this);
-    QStringList filters;
-    QMap<QString, QString> map;
-    const char* filter_array[][2] = {
-        {"文本文档(*.txt)", ".txt"},
-        {"所有文件(*.*)"  , ".*"   },
-        {nullptr         , nullptr}
-    };
-    QString text = "";
-
-    for(int i=0; filter_array[i][0]!=nullptr; i++) {
-        filters.append(filter_array[i][0]);
-        map.insert(filter_array[i][0], filter_array[i][1]);
+void Textino::newFile()
+{
+    if (MaybeSave()) {
+        main_editor->clear();
+        SetCurrentFile("");
     }
-    dialog.setWindowTitle(title);
-    dialog.setWindowIcon(QIcon(icon_path));
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setNameFilters(filters);
-
-    if( mode == QFileDialog::AcceptOpen )
-        dialog.setFileMode(QFileDialog::ExistingFile);
-
-    if( dialog.exec() == QFileDialog::Accepted ) {
-        text = dialog.selectedFiles()[0];
-
-        if( mode == QFileDialog::AcceptSave ) {
-            QString postfix = map[dialog.selectedNameFilter()];
-            if((postfix != ".*") && !text.endsWith(postfix))
-                text = text + postfix;
-        }
-    }
-    return text;
 }
 
-int Textino::ShowMessage(bool error, QString text){
-    QMessageBox message(this);
-    message.setWindowTitle("Textino");
-    message.setWindowFlag(Qt::Drawer);
-    message.setText(text);
-    if(error){
-        message.setIcon(QMessageBox::Critical);
-        message.setStandardButtons(QMessageBox::Ok);
+void Textino::open()
+{
+    if (MaybeSave()) {
+        QString file_name = QFileDialog::getOpenFileName(this);
+        if (!file_name.isEmpty())
+            LoadFile(file_name);
+    }
+}
+
+bool Textino::save()
+{
+    if (current_file.isEmpty()) {
+        return SaveAs();
+    } else {
+        return SaveFile(current_file);
+    }
+}
+
+
+
+void Textino::CreateActions()
+{
+    new_act = new QAction(QIcon(":/imgs/new.png"), tr("&New"), this);
+    new_act->setShortcut(tr("Ctrl+N"));
+    new_act->setStatusTip(tr("Create a new file"));
+    connect(new_act, SIGNAL(triggered()), this, SLOT(newFile()));
+
+    open_act = new QAction(QIcon(":/imgs/open.png"), tr("&Open..."), this);
+    open_act->setShortcut(tr("Ctrl+O"));
+    open_act->setStatusTip(tr("Open an existing file"));
+    connect(open_act, SIGNAL(triggered()), this, SLOT(open()));
+
+    save_act = new QAction(QIcon(":/imgs/save.png"), tr("&Save"), this);
+    save_act->setShortcut(tr("Ctrl+S"));
+    save_act->setStatusTip(tr("Save the document to disk"));
+    connect(save_act, SIGNAL(triggered()), this, SLOT(save()));
+
+    save_as_act = new QAction(QIcon(":/imgs/save-as.png"), tr("Save &As..."), this);
+    save_as_act->setShortcut(tr("Ctrl+Shift+S"));
+    save_as_act->setStatusTip(tr("Save the document under a new name"));
+    connect(save_as_act, SIGNAL(triggered()), this, SLOT(SaveAs()));
+
+    exit_act = new QAction(QIcon(":/imgs/exit.png"), tr("E&xit"), this);
+    exit_act->setShortcut(tr("Ctrl+W"));
+    exit_act->setStatusTip(tr("Exit the application"));
+    connect(exit_act, SIGNAL(triggered()), this, SLOT(close()));
+
+    cut_act = new QAction(QIcon(":/imgs/cut.png"), tr("Cu&t"), this);
+    cut_act->setShortcut(tr("Ctrl+X"));
+    cut_act->setStatusTip(tr("Cut the current selection's contents to the "
+                            "clipboard"));
+    connect(cut_act, SIGNAL(triggered()), main_editor, SLOT(cut()));
+
+    copy_act = new QAction(QIcon(":/imgs/copy.png"), tr("&Copy"), this);
+    copy_act->setShortcut(tr("Ctrl+C"));
+    copy_act->setStatusTip(tr("Copy the current selection's contents to the "
+                             "clipboard"));
+    connect(copy_act, SIGNAL(triggered()), main_editor, SLOT(copy()));
+
+    paste_act = new QAction(QIcon(":/imgs/paste.png"), tr("&Paste"), this);
+    paste_act->setShortcut(tr("Ctrl+V"));
+    paste_act->setStatusTip(tr("Paste the clipboard's contents into the current "
+                              "selection"));
+    connect(paste_act, SIGNAL(triggered()), main_editor, SLOT(paste()));
+
+    undo_act = new QAction(QIcon(":/imgs/undo.png"), tr("&Undo"), this);
+    undo_act->setShortcut(tr("Ctrl+Z"));
+    undo_act->setStatusTip(tr("Withdrawn last action"));
+    connect(undo_act, SIGNAL(triggered()), main_editor, SLOT(undo()));
+
+    redo_act = new QAction(QIcon(":/imgs/redo.png"), tr("&Rndo"), this);
+    redo_act->setShortcut(tr("Ctrl+Shift+Z"));
+    redo_act->setStatusTip(tr("Redo the action that has been withdrawn"));
+    connect(redo_act, SIGNAL(triggered()), main_editor, SLOT(redo()));
+
+
+    about_act = new QAction(QIcon(":/imgs/about.png"), tr("&About"), this);
+    about_act->setStatusTip(tr("Show the application's About box"));
+    connect(about_act, SIGNAL(triggered()), this, SLOT(About()));
+
+    cut_act->setEnabled(false);
+    copy_act->setEnabled(false);
+    connect(main_editor, SIGNAL(copyAvailable(bool)),
+            cut_act, SLOT(setEnabled(bool)));
+    connect(main_editor, SIGNAL(copyAvailable(bool)),
+            copy_act, SLOT(setEnabled(bool)));
+}
+
+void Textino::CreateMenus()
+{
+    file_menu = menuBar()->addMenu(tr("&File"));
+    file_menu->addAction(new_act);
+    file_menu->addAction(open_act);
+    file_menu->addAction(save_act);
+    file_menu->addAction(save_as_act);
+    file_menu->addSeparator();
+    file_menu->addAction(exit_act);
+
+    edit_menu = menuBar()->addMenu(tr("&Edit"));
+    edit_menu->addAction(cut_act);
+    edit_menu->addAction(copy_act);
+    edit_menu->addAction(paste_act);
+    edit_menu->addAction(undo_act);
+    edit_menu->addAction(redo_act);
+
+    menuBar()->addSeparator();
+
+    help_menu = menuBar()->addMenu(tr("&Help"));
+    help_menu->addAction(about_act);
+
+}
+
+void Textino::CreateToolBars()
+{
+    file_tool_bar = addToolBar(tr("File"));
+    file_tool_bar->addAction(new_act);
+    file_tool_bar->addAction(open_act);
+    file_tool_bar->addAction(save_act);
+    file_tool_bar->addAction(save_as_act);
+
+    edit_tool_bar = addToolBar(tr("Edit"));
+    edit_tool_bar->addAction(cut_act);
+    edit_tool_bar->addAction(copy_act);
+    edit_tool_bar->addAction(paste_act);
+    edit_tool_bar->addAction(undo_act);
+    edit_tool_bar->addAction(redo_act);
+
+    help_tool_bar = addToolBar(tr("Help"));
+    help_tool_bar->addAction(about_act);
+}
+
+void Textino::CreateStatusBar()
+{
+    statusBar()->showMessage(tr("Ready"));
+}
+
+bool Textino::MaybeSave()
+{
+    if (main_editor->isModified()) {
+        int ret = QMessageBox::warning(this, tr("Textino"),
+                     tr("The document has been modified.\n"
+                        "Do you want to save your changes?"),
+                     QMessageBox::Yes | QMessageBox::Default,
+                     QMessageBox::No,
+                     QMessageBox::Cancel | QMessageBox::Escape);
+        if (ret == QMessageBox::Yes)
+            return save();
+        else if (ret == QMessageBox::Cancel)
+            return false;
+    }
+    return true;
+}
+
+void Textino::LoadFile(const QString &file_name)
+{
+    QFile file(file_name);
+    if (!file.open(QFile::ReadOnly)) {
+        QMessageBox::warning(this, tr("Textino"),
+                             tr("Cannot read file %1:\n%2.")
+                             .arg(file_name)
+                             .arg(file.errorString()));
+        return;
+    }
+
+    QTextStream in(&file);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    main_editor->setText(in.readAll());
+    QApplication::restoreOverrideCursor();
+
+    SetCurrentFile(file_name);
+    statusBar()->showMessage(tr("File loaded"), 2000);
+}
+
+bool Textino::SaveFile(const QString &file_name)
+{
+    QFile file(file_name);
+    if (!file.open(QFile::WriteOnly)) {
+        QMessageBox::warning(this, tr("Textino"),
+                             tr("Cannot write file %1:\n%2.")
+                             .arg(file_name)
+                             .arg(file.errorString()));
+        return false;
+    }
+
+    QTextStream out(&file);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+    out << main_editor->text();
+    QApplication::restoreOverrideCursor();
+
+    SetCurrentFile(file_name);
+    statusBar()->showMessage(tr("File saved"), 2000);
+    return true;
+}
+
+void Textino::SetCurrentFile(const QString &file_name)
+{
+    current_file = file_name;
+    main_editor->setModified(false);
+    setWindowModified(false);
+
+    QString shown_name;
+    if (current_file.isEmpty())
+        shown_name = "untitled.txt";
+    else
+        shown_name = GetFileName(current_file);
+    CreateLexer();
+    setWindowTitle(tr("%1[*] - %2").arg(shown_name).arg(tr("Textino")));
+}
+
+QString Textino::GetFileName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+void Textino::CreateLexer(){
+    QString ext = QFileInfo(current_file).suffix();
+
+    if(ext == "c" || ext == "cpp" || ext == "cc" || ext == "h" || ext=="hpp" || ext =="hh"){
+        text_lexer = new QsciLexerCPP;
+        text_lexer->setColor(QColor(Qt:: gray),QsciLexerCPP::CommentLine);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext == "java") {
+        text_lexer = new QsciLexerJava;
+        text_lexer->setColor(QColor(Qt:: gray),QsciLexerJava::CommentLine);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext =="py") {
+        text_lexer = new QsciLexerPython;
+        text_lexer->setColor(QColor(Qt:: gray),QsciLexerPython::Comment);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext =="js" || ext =="ts") {
+        text_lexer = new QsciLexerJavaScript;
+        text_lexer->setColor(QColor(Qt:: gray),QsciLexerJavaScript::CommentLine);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext =="v" || ext =="vhdl") {
+        text_lexer = new QsciLexerVerilog;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerVerilog::CommentLine);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext =="sql") {
+        text_lexer = new QsciLexerSQL;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerSQL::CommentLine);
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
     }
     else {
-        message.setIcon(QMessageBox::Question);
-        message.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        text_lexer = nullptr;
+        main_editor->setAutoIndent(false);
+        main_editor->setBraceMatching(QsciScintilla::NoBraceMatch);
     }
-    return message.exec();
+
+    main_editor->setLexer(text_lexer);
+    main_editor->setAutoCompletionSource(QsciScintilla::AcsAll);
+    main_editor->setAutoCompletionCaseSensitivity(true);
+    main_editor->setAutoCompletionThreshold(1);
 }
 
-void Textino::SavePrevious(){
-    QString this_file = file_path;
-    int chioce = ShowMessage(false, QString("Want to save this file?"));
-    if(chioce==QMessageBox::Yes)
-        SaveFile(file_path, "Save");
-    else if(chioce==QMessageBox::No){
-        changed = false;
-    }
-}
 
-void Textino::closeEvent(QCloseEvent* event){
-    if(changed)
-        SavePrevious();
 
-    if(!changed)
-        event->accept();
-    else
-        event->ignore();
-}
+
+
+
+
+
+
+
 

@@ -1,74 +1,48 @@
-#include "Textino.h"
+#include <QAction>
+#include <QApplication>
+#include <QCloseEvent>
+#include <QFile>
+#include <QFileInfo>
+#include <QFileDialog>
 #include <QIcon>
 #include <QMenu>
-#include <QAction>
 #include <QMenuBar>
-#include <QStatusBar>
 #include <QMessageBox>
-#include <QFileDialog>
+#include <QPoint>
+#include <QSettings>
+#include <QSize>
+#include <QStatusBar>
+#include <QTextStream>
+#include <QToolBar>
 
-void Textino::ActionCopy(){main_editor.copy();}
-void Textino::ActionCut(){main_editor.cut();}
-void Textino::ActionPaste(){main_editor.paste();}
-void Textino::ActionUndo(){main_editor.undo();}
-void Textino::ActionRedo(){main_editor.redo();}
-void Textino::ActionCursor(){
+#include <Qsci/qsciscintilla.h>
+#include <Qsci/qscilexercpp.h>
+#include <Qsci/qscilexerjava.h>
+#include <Qsci/qscilexerjavascript.h>
+#include <Qsci/qscilexerpython.h>
+#include <Qsci/qscilexerverilog.h>
+#include <Qsci/qscilexersql.h>
+#include <Qsci/qsciapis.h>
 
-}
-void Textino::ActionChanged(){
-    if(!changed)
-        setWindowTitle("* "+windowTitle());
-    changed = true;
-    status_label.setText("length: " + QString::number(main_editor.toPlainText().length()) + "    lines: " + QString::number(main_editor.document()->lineCount()));
-}
+#include "Textino.h"
 
-void Textino::ActionNew(){
-    if(changed)
-        SavePrevious();
-
-    if(!changed){
-        main_editor.clear();
-        changed = false;
-        file_path = nullptr;
-        setWindowTitle("New document - Textino");
-    }
+void Textino::Modified()
+{
+    setWindowModified(main_editor->isModified());
 }
 
-void Textino::ActionOpen(){
-    if(changed)
-        SavePrevious();
-    if(!changed){
-        QString open_path = ShowDialog(QFileDialog::AcceptOpen, "Open", ":img/imgs/icon.png");
-        OpenFile(open_path);
-    }
+void Textino::About()
+{
+   QMessageBox::about(this, tr("About Textino"),
+            tr("<b>Textino</b> is an extremely light text editor, written by Raymond Ziyue"));
 }
 
-void Textino::ActionSave(){
-    QString save_path = SaveFile(file_path, "Save");
-    if(save_path!="")
-        file_path = save_path;
-}
-void Textino::ActionSaveAs(){
-    QString save_path = SaveFile(nullptr, "Save As");
-    if(save_path!="")
-        file_path = save_path;
-}
-void Textino::ActionExit(){
-    if(changed)
-        SavePrevious();
-    if(!changed)
-        close();
-}
 
-void Textino::ActionHighlight(){
-    QList<QTextEdit::ExtraSelection> extraSelections;
-    QTextEdit::ExtraSelection selection;
-    QColor lineColor = QColor(Qt::green).lighter(160);
+bool Textino::SaveAs()
+{
+    QString file_name = QFileDialog::getSaveFileName(this);
+    if (file_name.isEmpty())
+        return false;
 
-    selection.format.setBackground(lineColor);
-    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-    selection.cursor = main_editor.textCursor();
-    selection.cursor.clearSelection();
-    extraSelections.append(selection);
-    main_editor.setExtraSelections(extraSelections);
+    return SaveFile(file_name);
 }
