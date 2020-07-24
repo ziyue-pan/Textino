@@ -29,12 +29,14 @@
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
 
+
 #include "Textino.h"
 
 Textino::Textino()
 {
     main_editor = new QsciScintilla;
     setCentralWidget(main_editor);  // qscintilla editor as the central part
+    config = new ConfigManager();
 
     CreateActions();
     CreateMenus();
@@ -44,7 +46,8 @@ Textino::Textino()
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
 
     main_editor->setMarginType(0, QsciScintilla::NumberMargin);     // left margin content
-    main_editor->setMarginWidth(0,20);                              // left margin width
+    main_editor->setMarginsFont(QFont(config->GetDefaultFontFamily(), config->GetDefaultFontSize()));
+    main_editor->setMarginWidth(0,30);                              // left margin width
     main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE,QsciScintilla::SC_CP_UTF8);
     main_editor->setIndentationGuides(QsciScintilla::SC_IV_LOOKBOTH);
     main_editor->setCaretLineVisible(true);             // line number visible
@@ -54,8 +57,8 @@ Textino::Textino()
     main_editor->setWrapMode(QsciScintilla::WrapWord);  // set content wrap
     setWindowIcon(QIcon(":/imgs/icon.png"));            // main icon
     resize(800, 600);                                   // main size
-    QFont font; 
-    font.setPointSize(13);                              // font size
+
+    QFont font(config->GetFontFamily(), config->GetFontSize());
     main_editor->setFont(font);
     SetCurrentFile("");
 }
@@ -304,14 +307,5 @@ void Textino::CreateLexer(){
     main_editor->setAutoCompletionCaseSensitivity(true);
     main_editor->setAutoCompletionThreshold(1);
 }
-
-
-
-
-
-
-
-
-
 
 

@@ -6,7 +6,7 @@
  */
 #include <QApplication>
 
-#include "Textino.h"
+#include "core/Textino.h"
 
 int main(int argc, char *argv[]) {
     Q_INIT_RESOURCE(application);

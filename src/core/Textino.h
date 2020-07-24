@@ -7,6 +7,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "ConfigManager.h"
+
 #include <QMainWindow>
 #include <Qsci/qscilexer.h>
 
@@ -47,10 +49,12 @@ private:
     QsciScintilla *main_editor; // main editor
     QString current_file;       // current file path
     QsciLexer *text_lexer;      // current language lexer
+    ConfigManager *config;
 
     QMenu *file_menu;           // menus
     QMenu *edit_menu;
     QMenu *help_menu;
+
     QToolBar *file_tool_bar;    // tool bars
     QToolBar *edit_tool_bar;
     QToolBar *help_tool_bar;

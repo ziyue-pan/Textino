@@ -70,7 +70,8 @@ void Textino::Modified() {
 
 void Textino::About() {
    QMessageBox::about(this, tr("About Textino"),
-            tr("<b>Textino</b> is an extremely light text editor, written by <a herf='https://github.com/PAN-Ziyue/Textino'>Raymond Ziyue</a>"));
+            tr("<b>Textino</b> is an extremely light text editor, \
+            written by <a herf='https://github.com/PAN-Ziyue/Textino'>Raymond Ziyue</a>"));
 }
 
 bool Textino::SaveAs() {

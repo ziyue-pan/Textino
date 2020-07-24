@@ -1,6 +1,14 @@
 CONFIG      += qscintilla2
 
-HEADERS      = Textino.h
-SOURCES      = main.cpp Textino.cpp Slots.cpp
+HEADERS      = \
+    src/core/Textino.h \
+    src/core/ConfigManager.h
+
+
+SOURCES      = src/main.cpp \
+    src/core/Slots.cpp \
+    src/core/Textino.cpp \
+    src/core/ConfigManager.cpp
+
 
 RESOURCES    = application.qrc
