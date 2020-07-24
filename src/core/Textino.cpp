@@ -1,7 +1,7 @@
 /*
  * Created Date: Friday, June 5th 2020, 3:34:39 pm
  * Author: Raymond Rhino
- * 
+ *
  * Copyright (c) 2020 Textino
  */
 #include <QAction>
@@ -45,10 +45,12 @@ Textino::Textino()
 
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
 
-    main_editor->setMarginType(0, QsciScintilla::NumberMargin);     // left margin content
-    main_editor->setMarginsFont(QFont(config->GetDefaultFontFamily(), config->GetDefaultFontSize()));
-    main_editor->setMarginWidth(0,30);                              // left margin width
-    main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE,QsciScintilla::SC_CP_UTF8);
+    main_editor->setMarginType(0, QsciScintilla::NumberMargin);             // left margin content
+    main_editor->setMarginsFont(QFont(config->GetDefaultFontFamily(),
+                                      config->GetDefaultFontSize()));
+    main_editor->setMarginWidth(0, 50);                                     // left margin width
+
+    main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE, QsciScintilla::SC_CP_UTF8);
     main_editor->setIndentationGuides(QsciScintilla::SC_IV_LOOKBOTH);
     main_editor->setCaretLineVisible(true);             // line number visible
     QColor line_color = QColor(Qt::green).lighter(180); // line highlighting color
@@ -61,6 +63,16 @@ Textino::Textino()
     QFont font(config->GetFontFamily(), config->GetFontSize());
     main_editor->setFont(font);
     SetCurrentFile("");
+}
+
+Textino::~Textino() {
+
+}
+
+
+
+void Textino::CreateMainEditor() {
+
 }
 
 void Textino::CreateActions()

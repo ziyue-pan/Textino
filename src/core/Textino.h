@@ -7,7 +7,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "ConfigManager.h"
+#include "../config/ConfigManager.h"
 
 #include <QMainWindow>
 #include <Qsci/qscilexer.h>
@@ -22,6 +22,7 @@ class Textino : public QMainWindow
 
 public:
     Textino();
+    ~Textino();
 
 protected:
     void closeEvent(QCloseEvent *event);    // overide closeEvent
@@ -35,12 +36,13 @@ private slots:
     void Modified();    // text had been modified
 
 private:
-    void CreateActions();   // create actions
-    void CreateMenus();     // create menus
-    void CreateToolBars();  // create tool bar
-    void CreateStatusBar(); // create status bar
-    void CreateLexer();     // create lexer
-    bool MaybeSave();       // modified but unsaved
+    void CreateMainEditor();    // create main editor
+    void CreateActions();       // create actions
+    void CreateMenus();         // create menus
+    void CreateToolBars();      // create tool bar
+    void CreateStatusBar();     // create status bar
+    void CreateLexer();         // create lexer
+    bool MaybeSave();           // modified but unsaved
     void LoadFile(const QString &file_name);        // load file
     bool SaveFile(const QString &file_name);        // save file
     void SetCurrentFile(const QString &file_name);  // set file path
@@ -51,14 +53,16 @@ private:
     QsciLexer *text_lexer;      // current language lexer
     ConfigManager *config;
 
-    QMenu *file_menu;           // menus
-    QMenu *edit_menu;
-    QMenu *help_menu;
+    QMenu *file_menu;   // file menus
+    QMenu *edit_menu;   // edit menus
+    QMenu *help_menu;   // help menus
 
     QToolBar *file_tool_bar;    // tool bars
     QToolBar *edit_tool_bar;
     QToolBar *help_tool_bar;
-    QAction *new_act;           // actions
+
+
+    QAction *new_act;
     QAction *open_act;
     QAction *save_act;
     QAction *save_as_act;

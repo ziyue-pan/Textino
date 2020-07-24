@@ -11,7 +11,7 @@ class ConfigManager
 private:
     // default configuration file path
     const QString config_path = QCoreApplication::applicationDirPath() + "/config.ini";
-    const int default_font_size = 12;
+    const int default_font_size = 11;
     const QString default_font_family = "Consolas";
 
     QSettings *settings;    // default setting class pointer
