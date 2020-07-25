@@ -58,8 +58,9 @@ void Textino::CreateMainEditor() {
 
     main_editor->setMarginType(0, QsciScintilla::NumberMargin);             // left margin content
     main_editor->setMarginsFont(config->GetDefaultFont());
-    main_editor->setMarginWidth(0, 50);                                     // left margin width
-
+    main_editor->setMarginWidth(0, 45);                                     // left margin width
+    main_editor->setTabWidth(4);
+    main_editor->setTabIndents(true);
 
 
     main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE, QsciScintilla::SC_CP_UTF8);
@@ -72,8 +73,7 @@ void Textino::CreateMainEditor() {
     setWindowIcon(QIcon(":/imgs/icon.png"));                // main icon
     resize(1280, 720);                                      // main size
 
-    QFont font = config->GetFont();
-    main_editor->setFont(font);
+    main_editor->setFont(config->GetFont());
     SetCurrentFile("");
 }
 
@@ -124,7 +124,7 @@ void Textino::CreateActions()
     connect(about_act, SIGNAL(triggered()), this, SLOT(About()));
 
     settings_act = new QAction(QIcon(":/imgs/settings.png"), tr("&Settings"), this);
-    redo_act->setShortcut(tr("Ctrl+Shift+P"));
+    settings_act->setShortcut(tr("Ctrl+Shift+P"));
     connect(settings_act, SIGNAL(triggered()), this, SLOT(SetFont()));
 
     cut_act->setEnabled(false);
@@ -175,6 +175,7 @@ void Textino::CreateToolBars()
     edit_tool_bar->addAction(paste_act);
     edit_tool_bar->addAction(undo_act);
     edit_tool_bar->addAction(redo_act);
+    edit_tool_bar->addAction(settings_act);
 
     help_tool_bar = addToolBar(tr("Help"));
     help_tool_bar->addAction(about_act);
@@ -308,8 +309,9 @@ void Textino::CreateLexer(){
         main_editor->setBraceMatching(QsciScintilla::NoBraceMatch);
     }
 
-    if(text_lexer)
+    if(text_lexer) {
         text_lexer->setFont(config->GetFont());
+    }
 
     main_editor->setLexer(text_lexer);
     main_editor->setAutoCompletionSource(QsciScintilla::AcsAll);

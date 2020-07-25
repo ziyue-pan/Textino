@@ -1,4 +1,3 @@
-* 增加dark mode
 * 左下角增加文件路径提示
 * 右下角光标坐标提示
 * xxx selected提示
