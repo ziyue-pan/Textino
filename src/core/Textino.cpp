@@ -34,14 +34,23 @@
 
 Textino::Textino()
 {
-    main_editor = new QsciScintilla;
-    setCentralWidget(main_editor);  // qscintilla editor as the central part
     config = new ConfigManager();
 
+    CreateMainEditor();
     CreateActions();
     CreateMenus();
     CreateToolBars();
     CreateStatusBar();
+}
+
+Textino::~Textino() {
+
+}
+
+
+void Textino::CreateMainEditor() {
+    main_editor = new QsciScintilla;
+    setCentralWidget(main_editor);  // qscintilla editor as the central part
 
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
 
@@ -50,29 +59,20 @@ Textino::Textino()
                                       config->GetDefaultFontSize()));
     main_editor->setMarginWidth(0, 50);                                     // left margin width
 
+
     main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE, QsciScintilla::SC_CP_UTF8);
     main_editor->setIndentationGuides(QsciScintilla::SC_IV_LOOKBOTH);
-    main_editor->setCaretLineVisible(true);             // line number visible
-    QColor line_color = QColor(Qt::green).lighter(180); // line highlighting color
+    main_editor->setCaretLineVisible(true);                 // line number visible
+    QColor line_color = QColor(Qt::green).lighter(195);     // line highlighting color
     main_editor->setCaretLineBackgroundColor(line_color);
+    main_editor->setWrapMode(QsciScintilla::WrapWord);      // set content wrap
 
-    main_editor->setWrapMode(QsciScintilla::WrapWord);  // set content wrap
-    setWindowIcon(QIcon(":/imgs/icon.png"));            // main icon
-    resize(800, 600);                                   // main size
+    setWindowIcon(QIcon(":/imgs/icon.png"));                // main icon
+    resize(1280, 720);                                      // main size
 
     QFont font(config->GetFontFamily(), config->GetFontSize());
     main_editor->setFont(font);
     SetCurrentFile("");
-}
-
-Textino::~Textino() {
-
-}
-
-
-
-void Textino::CreateMainEditor() {
-
 }
 
 void Textino::CreateActions()
@@ -249,28 +249,27 @@ bool Textino::SaveFile(const QString &file_name)
     return true;
 }
 
-void Textino::SetCurrentFile(const QString &file_name)
+void Textino::SetCurrentFile(const QString &given_path)
 {
-    current_file = file_name;
+    current_path = given_path;
     main_editor->setModified(false);
     setWindowModified(false);
 
     QString shown_name;
-    if (current_file.isEmpty())
-        shown_name = "untitled.txt";
+    if (current_path.isEmpty())
+        shown_name = "Untitled.txt";
     else
-        shown_name = GetFileName(current_file);
+        shown_name = GetFileName(current_path);
     CreateLexer();
     setWindowTitle(tr("%1[*] - %2").arg(shown_name).arg(tr("Textino")));
 }
 
-QString Textino::GetFileName(const QString &fullFileName)
-{
-    return QFileInfo(fullFileName).fileName();
+QString Textino::GetFileName(const QString &current_path) {
+    return QFileInfo(current_path).fileName();
 }
 
 void Textino::CreateLexer(){
-    QString ext = QFileInfo(current_file).suffix();
+    QString ext = QFileInfo(current_path).suffix();
 
     if(ext == "c" || ext == "cpp" || ext == "cc" || ext == "h" || ext=="hpp" || ext =="hh"){
         text_lexer = new QsciLexerCPP;

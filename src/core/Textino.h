@@ -49,7 +49,8 @@ private:
     QString GetFileName(const QString &file_name);  // get the file name
 
     QsciScintilla *main_editor; // main editor
-    QString current_file;       // current file path
+    QString current_file;       // current file name
+    QString current_path;       // current file path
     QsciLexer *text_lexer;      // current language lexer
     ConfigManager *config;
 
