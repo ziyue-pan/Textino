@@ -276,6 +276,7 @@ void Textino::CreateLexer(){
         text_lexer->setColor(QColor(Qt:: gray),QsciLexerCPP::CommentLine);
         main_editor->setAutoIndent(true);
         main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+
     }
     else if(ext == "java") {
         text_lexer = new QsciLexerJava;
@@ -312,6 +313,9 @@ void Textino::CreateLexer(){
         main_editor->setAutoIndent(false);
         main_editor->setBraceMatching(QsciScintilla::NoBraceMatch);
     }
+
+    if(text_lexer)
+        text_lexer->setFont(QFont(config->GetFontFamily(), config->GetFontSize()));
 
     main_editor->setLexer(text_lexer);
     main_editor->setAutoCompletionSource(QsciScintilla::AcsAll);
