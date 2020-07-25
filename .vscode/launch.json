@@ -1,0 +1,15 @@
+
+{
+    "version": "0.2.0",
+    "configurations": [{
+        "name": "CDB",
+        "type": "cppvsdbg",
+        "request": "launch",
+        "program": "demo1.exe",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceRoot}/debug/",
+        "environment": [],
+        "externalConsole": true
+    }]
+}

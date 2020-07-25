@@ -20,6 +20,7 @@
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
+#include <QLabel>
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexercpp.h>
@@ -80,4 +81,32 @@ bool Textino::SaveAs() {
         return false;
 
     return SaveFile(file_name);
+}
+
+void Textino::OnCursorPositionChanged() {
+    int col = 0;
+    int ln = 0;
+    main_editor->getCursorPosition(&col,&ln);
+    status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
+}
+
+void Textino::OnTextChanged() {
+    status_label->setText("length: " + QString::number(main_editor->text().length()) + "    lines: " + QString::number(main_editor->lines()));
+}
+
+void Textino::OnSelected() {
+    int col = 0;
+    int ln = 0;
+    main_editor->getCursorPosition(&col,&ln);
+    if (main_editor->selectedText().length() != 0)
+        status_cursor_label->setText( QString::number(main_editor->selectedText().length()) + " selected     " + "Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
+    else 
+        status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
+} 
+
+void Textino::OnModificationChanged() {
+    if (main_editor->isModified())
+        status_modification_label->setText("modified");
+    else
+        status_modification_label->setText("");
 }

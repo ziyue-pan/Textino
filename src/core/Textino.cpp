@@ -20,6 +20,7 @@
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
+#include <QLabel>
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexercpp.h>
@@ -28,7 +29,6 @@
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
-
 
 #include "Textino.h"
 
@@ -49,7 +49,8 @@ Textino::~Textino() {
 
 
 void Textino::CreateMainEditor() {
-    main_editor = new QsciScintilla;
+    main_editor = new QsciScintilla();
+
     setCentralWidget(main_editor);  // qscintilla editor as the central part
 
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
@@ -188,7 +189,32 @@ void Textino::CreateToolBars()
 
 void Textino::CreateStatusBar()
 {
-    statusBar()->showMessage(tr("Ready"));
+    QStatusBar* status_bar = statusBar();
+    status_bar->showMessage(tr("Ready"));
+
+    status_label = new QLabel("Ready");
+    status_cursor_label = new QLabel("Ready");
+    status_modification_label = new QLabel("Ready");
+
+    status_modification_label->setAlignment(Qt::AlignCenter);
+    OnModificationChanged();
+    status_bar->addPermanentWidget(status_modification_label);
+
+    status_cursor_label->setMinimumWidth(150);
+    status_cursor_label->setAlignment(Qt::AlignCenter);
+    OnCursorPositionChanged();
+    status_bar->addPermanentWidget(status_cursor_label);
+
+    status_bar->addPermanentWidget(new QLabel());
+    status_label->setMinimumWidth(150);
+    status_label->setAlignment(Qt::AlignCenter);
+    OnTextChanged();
+    status_bar->addPermanentWidget(status_label);
+
+    connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnSelected()));
+    connect(main_editor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));
+    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(OnCursorPositionChanged()));
+    connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(OnModificationChanged()));
 }
 
 bool Textino::MaybeSave()
@@ -322,5 +348,3 @@ void Textino::CreateLexer(){
     main_editor->setAutoCompletionCaseSensitivity(true);
     main_editor->setAutoCompletionThreshold(1);
 }
-
-

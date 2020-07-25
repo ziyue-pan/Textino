@@ -12,6 +12,8 @@
 #include <QMainWindow>
 #include <Qsci/qscilexer.h>
 
+class QLabel;
+class QStatusBar;
 class QAction;      
 class QMenu;
 class QsciScintilla;    // qscintilla class
@@ -34,6 +36,10 @@ private slots:
     bool SaveAs();      // save as another file
     void About();       // about info
     void Modified();    // text had been modified
+    void OnCursorPositionChanged();
+    void OnTextChanged();
+    void OnSelected();
+    void OnModificationChanged();
 
 private:
     void CreateMainEditor();    // create main editor
@@ -61,6 +67,12 @@ private:
     QToolBar *file_tool_bar;    // tool bars
     QToolBar *edit_tool_bar;
     QToolBar *help_tool_bar;
+
+    QStatusBar *status_bar;
+    QLabel *status_label;
+    QLabel *status_cursor_label;
+    QLabel *status_selected_label;
+    QLabel *status_modification_label;
 
 
     QAction *new_act;

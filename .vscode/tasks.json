@@ -1,0 +1,18 @@
+
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "demoDebug",
+        "type": "shell",
+        "command": "cmd",
+        "args": [
+            "/c",
+            "${workspaceRoot}/build.cmd",
+            "debug"
+        ],
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        }
+    }]
+}
