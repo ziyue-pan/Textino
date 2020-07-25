@@ -11,6 +11,4 @@ SOURCES      = src/main.cpp \
     src/core/Textino.cpp \
     src/config/ConfigManager.cpp
 
-
-
 RESOURCES    = application.qrc

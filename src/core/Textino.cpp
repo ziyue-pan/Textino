@@ -41,6 +41,8 @@ Textino::Textino()
     CreateMenus();
     CreateToolBars();
     CreateStatusBar();
+
+    QApplication::setFont(config->GetDefaultFont());
 }
 
 Textino::~Textino() {
@@ -55,9 +57,9 @@ void Textino::CreateMainEditor() {
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
 
     main_editor->setMarginType(0, QsciScintilla::NumberMargin);             // left margin content
-    main_editor->setMarginsFont(QFont(config->GetDefaultFontFamily(),
-                                      config->GetDefaultFontSize()));
+    main_editor->setMarginsFont(config->GetDefaultFont());
     main_editor->setMarginWidth(0, 50);                                     // left margin width
+
 
 
     main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE, QsciScintilla::SC_CP_UTF8);
@@ -70,7 +72,7 @@ void Textino::CreateMainEditor() {
     setWindowIcon(QIcon(":/imgs/icon.png"));                // main icon
     resize(1280, 720);                                      // main size
 
-    QFont font(config->GetFontFamily(), config->GetFontSize());
+    QFont font = config->GetFont();
     main_editor->setFont(font);
     SetCurrentFile("");
 }
@@ -79,61 +81,51 @@ void Textino::CreateActions()
 {
     new_act = new QAction(QIcon(":/imgs/new.png"), tr("&New"), this);
     new_act->setShortcut(tr("Ctrl+N"));
-    new_act->setStatusTip(tr("Create a new file"));
     connect(new_act, SIGNAL(triggered()), this, SLOT(NewFile()));
 
     open_act = new QAction(QIcon(":/imgs/open.png"), tr("&Open..."), this);
     open_act->setShortcut(tr("Ctrl+O"));
-    open_act->setStatusTip(tr("Open an existing file"));
     connect(open_act, SIGNAL(triggered()), this, SLOT(Open()));
 
     save_act = new QAction(QIcon(":/imgs/save.png"), tr("&Save"), this);
     save_act->setShortcut(tr("Ctrl+S"));
-    save_act->setStatusTip(tr("Save the document to disk"));
     connect(save_act, SIGNAL(triggered()), this, SLOT(Save()));
 
     save_as_act = new QAction(QIcon(":/imgs/save-as.png"), tr("Save &As..."), this);
     save_as_act->setShortcut(tr("Ctrl+Shift+S"));
-    save_as_act->setStatusTip(tr("Save the document under a new name"));
     connect(save_as_act, SIGNAL(triggered()), this, SLOT(SaveAs()));
 
     exit_act = new QAction(QIcon(":/imgs/exit.png"), tr("E&xit"), this);
     exit_act->setShortcut(tr("Ctrl+W"));
-    exit_act->setStatusTip(tr("Exit the application"));
     connect(exit_act, SIGNAL(triggered()), this, SLOT(close()));
 
     cut_act = new QAction(QIcon(":/imgs/cut.png"), tr("Cu&t"), this);
     cut_act->setShortcut(tr("Ctrl+X"));
-    cut_act->setStatusTip(tr("Cut the current selection's contents to the "
-                            "clipboard"));
     connect(cut_act, SIGNAL(triggered()), main_editor, SLOT(cut()));
 
     copy_act = new QAction(QIcon(":/imgs/copy.png"), tr("&Copy"), this);
     copy_act->setShortcut(tr("Ctrl+C"));
-    copy_act->setStatusTip(tr("Copy the current selection's contents to the "
-                             "clipboard"));
     connect(copy_act, SIGNAL(triggered()), main_editor, SLOT(copy()));
 
     paste_act = new QAction(QIcon(":/imgs/paste.png"), tr("&Paste"), this);
     paste_act->setShortcut(tr("Ctrl+V"));
-    paste_act->setStatusTip(tr("Paste the clipboard's contents into the current "
-                              "selection"));
     connect(paste_act, SIGNAL(triggered()), main_editor, SLOT(paste()));
 
     undo_act = new QAction(QIcon(":/imgs/undo.png"), tr("&Undo"), this);
     undo_act->setShortcut(tr("Ctrl+Z"));
-    undo_act->setStatusTip(tr("Withdrawn last action"));
     connect(undo_act, SIGNAL(triggered()), main_editor, SLOT(undo()));
 
     redo_act = new QAction(QIcon(":/imgs/redo.png"), tr("&Rndo"), this);
     redo_act->setShortcut(tr("Ctrl+Shift+Z"));
-    redo_act->setStatusTip(tr("Redo the action that has been withdrawn"));
     connect(redo_act, SIGNAL(triggered()), main_editor, SLOT(redo()));
 
 
     about_act = new QAction(QIcon(":/imgs/about.png"), tr("&About"), this);
-    about_act->setStatusTip(tr("Show the application's About box"));
     connect(about_act, SIGNAL(triggered()), this, SLOT(About()));
+
+    settings_act = new QAction(QIcon(":/imgs/settings.png"), tr("&Settings"), this);
+    redo_act->setShortcut(tr("Ctrl+Shift+P"));
+    connect(settings_act, SIGNAL(triggered()), this, SLOT(SetFont()));
 
     cut_act->setEnabled(false);
     copy_act->setEnabled(false);
@@ -159,6 +151,8 @@ void Textino::CreateMenus()
     edit_menu->addAction(paste_act);
     edit_menu->addAction(undo_act);
     edit_menu->addAction(redo_act);
+    edit_menu->addSeparator();
+    edit_menu->addAction(settings_act);
 
     menuBar()->addSeparator();
 
@@ -228,13 +222,13 @@ void Textino::LoadFile(const QString &file_name)
     statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
-bool Textino::SaveFile(const QString &file_name)
+bool Textino::SaveFile(const QString &given_path)
 {
-    QFile file(file_name);
+    QFile file(given_path);
     if (!file.open(QFile::WriteOnly)) {
         QMessageBox::warning(this, tr("Textino"),
                              tr("Cannot write file %1:\n%2.")
-                             .arg(file_name)
+                             .arg(given_path)
                              .arg(file.errorString()));
         return false;
     }
@@ -244,7 +238,7 @@ bool Textino::SaveFile(const QString &file_name)
     out << main_editor->text();
     QApplication::restoreOverrideCursor();
 
-    SetCurrentFile(file_name);
+    SetCurrentFile(given_path);
     statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
@@ -315,7 +309,7 @@ void Textino::CreateLexer(){
     }
 
     if(text_lexer)
-        text_lexer->setFont(QFont(config->GetFontFamily(), config->GetFontSize()));
+        text_lexer->setFont(config->GetFont());
 
     main_editor->setLexer(text_lexer);
     main_editor->setAutoCompletionSource(QsciScintilla::AcsAll);

@@ -20,6 +20,7 @@
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
+#include <QFontDialog>
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexercpp.h>
@@ -56,10 +57,10 @@ void Textino::Open() {
 }
 
 bool Textino::Save() {
-    if (current_file.isEmpty()) {
+    if (current_path.isEmpty()) {
         return SaveAs();
     } else {
-        return SaveFile(current_file);
+        return SaveFile(current_path);
     }
 }
 
@@ -81,3 +82,26 @@ bool Textino::SaveAs() {
 
     return SaveFile(file_name);
 }
+
+void Textino::SetFont() {
+    bool selected = false;
+    QFont given_font = QFontDialog::getFont(&selected, main_editor->font(), this, "Select Fonts");
+
+    if(selected) {
+        main_editor->setFont(given_font);
+        config->ModifyFont(given_font);
+        main_editor->setMarginsFont(config->GetDefaultFont());
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

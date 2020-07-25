@@ -34,6 +34,7 @@ private slots:
     bool SaveAs();      // save as another file
     void About();       // about info
     void Modified();    // text had been modified
+    void SetFont();     // change font & size
 
 private:
     void CreateMainEditor();    // create main editor
@@ -74,6 +75,7 @@ private:
     QAction *about_act;
     QAction *redo_act;
     QAction *undo_act;
+    QAction *settings_act;
 };
 
 #endif
