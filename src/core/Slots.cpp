@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QToolBar>
 #include <QLabel>
+#include <QFontDialog>
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexercpp.h>
@@ -57,10 +58,10 @@ void Textino::Open() {
 }
 
 bool Textino::Save() {
-    if (current_file.isEmpty()) {
+    if (current_path.isEmpty()) {
         return SaveAs();
     } else {
-        return SaveFile(current_file);
+        return SaveFile(current_path);
     }
 }
 
@@ -99,7 +100,7 @@ void Textino::OnSelected() {
     int ln = 0;
     main_editor->getCursorPosition(&col,&ln);
     if (main_editor->selectedText().length() != 0)
-        status_cursor_label->setText( QString::number(main_editor->selectedText().length()) + " selected     " + "Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
+        status_cursor_label->setText( " " + QString::number(main_editor->selectedText().length()) + " selected     " + "Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
     else 
         status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 } 
@@ -110,3 +111,24 @@ void Textino::OnModificationChanged() {
     else
         status_modification_label->setText("");
 }
+void Textino::SetFont() {
+    bool selected = false;
+    QFont given_font = QFontDialog::getFont(&selected, config->GetFont(), this, "Select Fonts");
+
+    if(selected) {
+        main_editor->setFont(given_font);
+        config->ModifyFont(given_font);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -40,6 +40,7 @@ private slots:
     void OnTextChanged();
     void OnSelected();
     void OnModificationChanged();
+    void SetFont();     // change font & size
 
 private:
     void CreateMainEditor();    // create main editor
@@ -86,6 +87,7 @@ private:
     QAction *about_act;
     QAction *redo_act;
     QAction *undo_act;
+    QAction *settings_act;
 };
 
 #endif

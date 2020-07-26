@@ -11,8 +11,6 @@ class ConfigManager
 private:
     // default configuration file path
     const QString config_path = QCoreApplication::applicationDirPath() + "/config.ini";
-    const int default_font_size = 11;
-    const QString default_font_family = "Consolas";
 
     QSettings *settings;    // default setting class pointer
     QString consolas;       // default font family
@@ -20,6 +18,10 @@ private:
 
     QString font_family;    // current font family
     int font_size;          // current font size
+    bool font_italic;
+    bool font_bold;
+    bool font_underline;
+    bool font_strike;
 
     // int tab_size;
     // bool dark_mode;
@@ -30,22 +32,10 @@ public:
     ConfigManager();
     ~ConfigManager();
 
-    void ModifyFontFamily(QString font_family);
-    void ModifyFontSize(int font_size);
-    // void ModifyDarkMode();
-    // void ModifyTabSize();
-
-    QString GetDefaultFontFamily();
-    int GetDefaultFontSize();
-    QString GetFontFamily();
-    int GetFontSize();
-    // bool GetDarkMode();
-    // int GetTabSize();
+    void ModifyFont(QFont &given_font);
+    QFont GetFont();
+    QFont GetDefaultFont();
 
 };
-
-
-
-
 
 #endif
