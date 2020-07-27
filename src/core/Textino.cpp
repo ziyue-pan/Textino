@@ -29,6 +29,11 @@
 #include <Qsci/qscilexerpython.h>
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
+#include <Qsci/qscilexerhtml.h>
+#include <QSci/qscilexercsharp.h>
+#include <Qsci/qscilexermarkdown.h>
+#include <Qsci/qscilexerbash.h>
+#include <Qsci/qscilexerxml.h>
 
 #include "../dialog/FindDialog.h"
 #include "../dialog/ReplaceDialog.h"
@@ -315,48 +320,58 @@ void Textino::CreateLexer(){
     if(ext == "c" || ext == "cpp" || ext == "cc" || ext == "h" || ext=="hpp" || ext =="hh"){
         text_lexer = new QsciLexerCPP;
         text_lexer->setColor(QColor(Qt:: gray),QsciLexerCPP::CommentLine);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
-
     }
     else if(ext == "java") {
         text_lexer = new QsciLexerJava;
         text_lexer->setColor(QColor(Qt:: gray),QsciLexerJava::CommentLine);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
     }
     else if(ext =="py") {
         text_lexer = new QsciLexerPython;
         text_lexer->setColor(QColor(Qt:: gray),QsciLexerPython::Comment);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
     }
     else if(ext =="js" || ext =="ts") {
         text_lexer = new QsciLexerJavaScript;
         text_lexer->setColor(QColor(Qt:: gray),QsciLexerJavaScript::CommentLine);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
     }
     else if(ext =="v" || ext =="vhdl") {
         text_lexer = new QsciLexerVerilog;
         text_lexer->setColor(QColor(Qt:: gray), QsciLexerVerilog::CommentLine);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
     }
     else if(ext =="sql") {
         text_lexer = new QsciLexerSQL;
         text_lexer->setColor(QColor(Qt:: gray), QsciLexerSQL::CommentLine);
-        main_editor->setAutoIndent(true);
-        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else if(ext == "html" || ext == "htm") {
+        text_lexer = new QsciLexerHTML;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerHTML::HTMLComment);
+    }
+    else if(ext == "xml") {
+        text_lexer = new QsciLexerXML;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerXML::HTMLComment);
+    }
+    else if(ext == "cs"){
+        text_lexer = new QsciLexerCSharp;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerCSharp::CommentLine);
+    }
+    else if(ext == "md") {
+        text_lexer = new QsciLexerMarkdown;
+    }
+    else if(ext == "sh") {
+        text_lexer = new QsciLexerBash;
+        text_lexer->setColor(QColor(Qt:: gray), QsciLexerBash::Comment);
     }
     else {
         text_lexer = nullptr;
-        main_editor->setAutoIndent(false);
-        main_editor->setBraceMatching(QsciScintilla::NoBraceMatch);
     }
 
     if(text_lexer) {
         text_lexer->setFont(config->GetFont());
+        main_editor->setAutoIndent(true);
+        main_editor->setBraceMatching(QsciScintilla::SloppyBraceMatch);
+    }
+    else {
+        main_editor->setAutoIndent(false);
+        main_editor->setBraceMatching(QsciScintilla::NoBraceMatch);
     }
 
     main_editor->setLexer(text_lexer);
