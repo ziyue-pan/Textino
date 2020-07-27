@@ -16,6 +16,8 @@ class QLabel;
 class QStatusBar;
 class QAction;      
 class QMenu;
+class FindDialog;
+class ReplaceDialog;
 class QsciScintilla;    // qscintilla class
 
 class Textino : public QMainWindow
@@ -34,11 +36,13 @@ private slots:
     void Open();        // open current file
     bool Save();        // save file
     bool SaveAs();      // save as another file
+    void Find();
+    void Replace();
     void About();       // about info
     void Modified();    // text had been modified
     void OnCursorPositionChanged();
     void OnTextChanged();
-    void OnSelected();
+    void OnTextSelected();
     void OnModificationChanged();
     void SetFont();     // change font & size
 
@@ -69,10 +73,13 @@ private:
     QToolBar *edit_tool_bar;
     QToolBar *help_tool_bar;
 
+    FindDialog *find_dialog;
+    ReplaceDialog *replace_dialog;
+
     QStatusBar *status_bar;
     QLabel *status_label;
     QLabel *status_cursor_label;
-    QLabel *status_selected_label;
+    QLabel *status_filepath_label;
     QLabel *status_modification_label;
 
 
@@ -87,6 +94,8 @@ private:
     QAction *about_act;
     QAction *redo_act;
     QAction *undo_act;
+    QAction *find_act;
+    QAction *replace_act;
     QAction *settings_act;
 };
 

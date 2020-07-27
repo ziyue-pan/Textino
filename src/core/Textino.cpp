@@ -30,6 +30,8 @@
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
 
+#include "../dialog/FindDialog.h"
+#include "../dialog/ReplaceDialog.h"
 #include "Textino.h"
 
 Textino::Textino()
@@ -37,6 +39,10 @@ Textino::Textino()
     config = new ConfigManager();
 
     CreateMainEditor();
+
+    find_dialog = new FindDialog(this, main_editor);
+    replace_dialog = new ReplaceDialog(this, main_editor);
+
     CreateActions();
     CreateMenus();
     CreateToolBars();
@@ -120,6 +126,13 @@ void Textino::CreateActions()
     redo_act->setShortcut(tr("Ctrl+Shift+Z"));
     connect(redo_act, SIGNAL(triggered()), main_editor, SLOT(redo()));
 
+    find_act = new QAction(QIcon(":/imgs/find.png"), tr("&Find"), this);
+    find_act->setShortcut(tr("Ctrl+F"));
+    connect(find_act, SIGNAL(triggered()), this, SLOT(Find()));
+
+    replace_act = new QAction(QIcon(":/imgs/replace.png"), tr("&Replace"), this);
+    replace_act->setShortcut(tr("Ctrl+R"));
+    connect(replace_act, SIGNAL(triggered()), this, SLOT(Replace()));
 
     about_act = new QAction(QIcon(":/imgs/about.png"), tr("&About"), this);
     connect(about_act, SIGNAL(triggered()), this, SLOT(About()));
@@ -152,6 +165,8 @@ void Textino::CreateMenus()
     edit_menu->addAction(paste_act);
     edit_menu->addAction(undo_act);
     edit_menu->addAction(redo_act);
+    edit_menu->addAction(find_act);
+    edit_menu->addAction(replace_act);
     edit_menu->addSeparator();
     edit_menu->addAction(settings_act);
 
@@ -176,6 +191,8 @@ void Textino::CreateToolBars()
     edit_tool_bar->addAction(paste_act);
     edit_tool_bar->addAction(undo_act);
     edit_tool_bar->addAction(redo_act);
+    edit_tool_bar->addAction(find_act);
+    edit_tool_bar->addAction(replace_act);
     edit_tool_bar->addAction(settings_act);
 
     help_tool_bar = addToolBar(tr("Help"));
@@ -184,12 +201,15 @@ void Textino::CreateToolBars()
 
 void Textino::CreateStatusBar()
 {
-    QStatusBar* status_bar = statusBar();
-    status_bar->showMessage(tr("Ready"));
+    status_bar = statusBar();
+    status_bar->setStyleSheet(QString("QStatusBar::item{border: 0px}"));
 
     status_label = new QLabel("Ready");
     status_cursor_label = new QLabel("Ready");
     status_modification_label = new QLabel("Ready");
+    status_filepath_label = new QLabel("Untitled.txt");
+
+    status_bar->addWidget(status_filepath_label);
 
     status_modification_label->setAlignment(Qt::AlignCenter);
     OnModificationChanged();
@@ -206,7 +226,7 @@ void Textino::CreateStatusBar()
     OnTextChanged();
     status_bar->addPermanentWidget(status_label);
 
-    connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnSelected()));
+    connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnTextSelected()));
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));
     connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(OnCursorPositionChanged()));
     connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(OnModificationChanged()));
@@ -246,7 +266,6 @@ void Textino::LoadFile(const QString &file_name)
     QApplication::restoreOverrideCursor();
 
     SetCurrentFile(file_name);
-    statusBar()->showMessage(tr("File loaded"), 2000);
 }
 
 bool Textino::SaveFile(const QString &given_path)
@@ -266,7 +285,6 @@ bool Textino::SaveFile(const QString &given_path)
     QApplication::restoreOverrideCursor();
 
     SetCurrentFile(given_path);
-    statusBar()->showMessage(tr("File saved"), 2000);
     return true;
 }
 
@@ -279,8 +297,10 @@ void Textino::SetCurrentFile(const QString &given_path)
     QString shown_name;
     if (current_path.isEmpty())
         shown_name = "Untitled.txt";
-    else
+    else {
         shown_name = GetFileName(current_path);
+        status_filepath_label->setText(current_path);
+    }
     CreateLexer();
     setWindowTitle(tr("%1[*] - %2").arg(shown_name).arg(tr("Textino")));
 }

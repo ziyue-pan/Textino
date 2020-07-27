@@ -14,6 +14,8 @@
         <file>imgs/exit.png</file>
         <file>imgs/new.png</file>
         <file>imgs/open.png</file>
+        <file>imgs/find.png</file>
+        <file>imgs/replace.png</file>
         <file>imgs/settings.png</file>
         <file>fonts/FiraCode.ttf</file>
         <file>fonts/Consolas.ttf</file>

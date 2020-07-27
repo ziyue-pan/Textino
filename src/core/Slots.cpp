@@ -31,6 +31,8 @@
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
 
+#include "../dialog/FindDialog.h"
+#include "../dialog/ReplaceDialog.h"
 #include "Textino.h"
 
 
@@ -46,6 +48,7 @@ void Textino::NewFile() {
     if (MaybeSave()) {
         main_editor->clear();
         SetCurrentFile("");
+        status_filepath_label->setText("Untitled.txt");
     }
 }
 
@@ -80,14 +83,21 @@ bool Textino::SaveAs() {
     QString file_name = QFileDialog::getSaveFileName(this);
     if (file_name.isEmpty())
         return false;
-
     return SaveFile(file_name);
+}
+
+void Textino::Find() {
+    find_dialog->show();
+}
+
+void Textino::Replace() {
+    replace_dialog->show();
 }
 
 void Textino::OnCursorPositionChanged() {
     int col = 0;
     int ln = 0;
-    main_editor->getCursorPosition(&col,&ln);
+    main_editor->getCursorPosition(&ln,&col);
     status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 }
 
@@ -95,12 +105,12 @@ void Textino::OnTextChanged() {
     status_label->setText("length: " + QString::number(main_editor->text().length()) + "    lines: " + QString::number(main_editor->lines()));
 }
 
-void Textino::OnSelected() {
+void Textino::OnTextSelected() {
     int col = 0;
     int ln = 0;
-    main_editor->getCursorPosition(&col,&ln);
+    main_editor->getCursorPosition(&ln,&col);
     if (main_editor->selectedText().length() != 0)
-        status_cursor_label->setText( " " + QString::number(main_editor->selectedText().length()) + " selected     " + "Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
+        status_cursor_label->setText( " " + QString::number(main_editor->selectedText().length()) + " selected     " + "Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1) + "  ");
     else 
         status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 } 
@@ -111,6 +121,7 @@ void Textino::OnModificationChanged() {
     else
         status_modification_label->setText("");
 }
+
 void Textino::SetFont() {
     bool selected = false;
     QFont given_font = QFontDialog::getFont(&selected, config->GetFont(), this, "Select Fonts");
