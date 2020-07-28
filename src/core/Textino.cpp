@@ -1,9 +1,9 @@
-/*
- * Created Date: Friday, June 5th 2020, 3:34:39 pm
- * Author: Raymond Rhino
- *
- * Copyright (c) 2020 Textino
- */
+//*  Filename: Textino.cpp
+//*  Created Date: 2020-06-05 15:34:39
+//*  Modified Date: 2020-07-28 10:57:26
+//*  Description:
+//*     Main function module of the whole notepad
+//*     
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -222,7 +222,7 @@ void Textino::CreateStatusBar()
 
     status_cursor_label->setMinimumWidth(150);
     status_cursor_label->setAlignment(Qt::AlignCenter);
-    OnCursorPositionChanged();
+    CursorPositionChanged();
     status_bar->addPermanentWidget(status_cursor_label);
 
     status_bar->addPermanentWidget(new QLabel());
@@ -233,7 +233,7 @@ void Textino::CreateStatusBar()
 
     connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnTextSelected()));
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));
-    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(OnCursorPositionChanged()));
+    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(CursorPositionChanged()));
     connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(OnModificationChanged()));
 }
 

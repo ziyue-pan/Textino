@@ -94,7 +94,7 @@ void Textino::Replace() {
     replace_dialog->show();
 }
 
-void Textino::OnCursorPositionChanged() {
+void Textino::CursorPositionChanged() {
     int col = 0;
     int ln = 0;
     main_editor->getCursorPosition(&ln,&col);

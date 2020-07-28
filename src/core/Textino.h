@@ -1,46 +1,62 @@
-/*
- * Created Date: Friday, June 5th 2020, 3:34:39 pm
- * Author: Raymond Rhino
- * 
- * Copyright (c) 2020 Textino
- */
+//*  Filename: Textino.h
+//*  Created Date: 2020-06-05 15:34:39
+//*  Modified Date: 2020-07-28 11:05:46
+//*  Description:
+//*     Header files for main class of notepad.
+//*     Including declaration of all attributes, variables & functions.
+//*     Using qscintilla class as main editor & lexer class
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "../config/ConfigManager.h"
+#include "../config/ConfigManager.h"    // config manager
+#include <QMainWindow>                  // main window
+#include <Qsci/qscilexer.h>             // qscintilla lexer
 
-#include <QMainWindow>
-#include <Qsci/qscilexer.h>
-
-class QLabel;
-class QStatusBar;
-class QAction;      
-class QMenu;
-class FindDialog;
-class ReplaceDialog;
+// Declaration for ready-to-show elements
+class QLabel;           // label
+class QStatusBar;       // status bar (bottom of the main window)
+class QAction;          // qt gui application action signal
+class QMenu;            // application menu
+class FindDialog;       // functional class for finding contents
+class ReplaceDialog;    // functional class for finding & replacing contents
 class QsciScintilla;    // qscintilla class
 
+
+//@ Class:  Textino
+//@ Description:
+//          Work as the main windows of GUI application.
+//          Including specification of all application elements
+//@ Usage:
+//          int main() {
+//              Textino main_application;
+//              main_application.show();
+//              return main_application.exec();
+//          }           
 class Textino : public QMainWindow
 {
-    Q_OBJECT
+    Q_OBJECT            // Q_OBJECT attribute
 
 public:
-    Textino();
-    ~Textino();
+    Textino();          // constructor
+    ~Textino();         // deconstructor
 
 protected:
-    void closeEvent(QCloseEvent *event);    // overide closeEvent
+                        // overide closeEvent()
+                        // to control file save or not
+    void closeEvent(QCloseEvent *event);    
+                                             
 
 private slots:
     void NewFile();     // new file
     void Open();        // open current file
     bool Save();        // save file
     bool SaveAs();      // save as another file
-    void Find();
-    void Replace();
+    void Find();        // find contents
+    void Replace();     // find & replace
     void About();       // about info
     void Modified();    // text had been modified
-    void OnCursorPositionChanged();
+    void CursorPositionChanged();
     void OnTextChanged();
     void OnTextSelected();
     void OnModificationChanged();
