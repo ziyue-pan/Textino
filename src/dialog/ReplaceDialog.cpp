@@ -1,3 +1,9 @@
+//*  Filename: ReplaceDialog.cpp
+//*  Created Date: 2020-07-25 15:34:39
+//*  Modified Date: 2020-07-28 11:05:46
+//*  Description:
+//*         Implementation of ReplaceDialog class
+
 #include "ReplaceDialog.h"
 
 ReplaceDialog::ReplaceDialog(QWidget* parent, QsciScintilla* pText) : FindDialog (parent, pText)
@@ -8,9 +14,9 @@ ReplaceDialog::ReplaceDialog(QWidget* parent, QsciScintilla* pText) : FindDialog
 
 void ReplaceDialog::initControl()
 {
-    replace_label = new QLabel("replace");
-    replace_btn = new QPushButton("replace(&R)");
-    replace_all_btn = new QPushButton("replace all(&A)");
+    replace_label = new QLabel("Replace");
+    replace_btn = new QPushButton("Replace(&R)");
+    replace_all_btn = new QPushButton("Replace all(&A)");
     replace_edit = new LineEdit();
 
     layout->removeWidget(match_check_box);

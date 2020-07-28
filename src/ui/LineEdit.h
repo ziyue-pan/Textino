@@ -1,3 +1,9 @@
+//*  Filename: LineEdit.h
+//*  Created Date: 2020-07-25 15:34:39
+//*  Modified Date: 2020-07-28 11:05:46
+//*  Description:
+//*         The class to override some functions in class QLineEdit
+
 #ifndef _LINEEDIT_H_
 #define _LINEEDIT_H_
 

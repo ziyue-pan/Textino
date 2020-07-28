@@ -1,3 +1,10 @@
+//*  Filename: FindDialog.cpp
+//*  Created Date: 2020-07-25 15:34:39
+//*  Modified Date: 2020-07-28 11:05:46
+//*  Description:
+//*         Implementation of FindDialog class
+
+
 #include "FindDialog.h"
 
 FindDialog::FindDialog(QWidget *parent, QsciScintilla *pText) : QDialog (parent, Qt::WindowCloseButtonHint | Qt::Drawer)
@@ -84,10 +91,8 @@ void FindDialog::setCursorIndex(int index, bool direction)
     flg ++;
     col = pos - flg;
     if (direction)
-        //text->setCursorPosition(ln,col+target.length());
         text->setSelection(ln, col, ln, col + target.length());
     else
-        //text->setCursorPosition(ln,col);
         text->setSelection(ln, col + target.length(), ln, col);
 
 }

@@ -222,7 +222,7 @@ void Textino::CreateStatusBar()
 
     status_cursor_label->setMinimumWidth(150);
     status_cursor_label->setAlignment(Qt::AlignCenter);
-    CursorPositionChanged();
+    OnCursorPositionChanged();
     status_bar->addPermanentWidget(status_cursor_label);
 
     status_bar->addPermanentWidget(new QLabel());
@@ -233,7 +233,7 @@ void Textino::CreateStatusBar()
 
     connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnTextSelected()));
     connect(main_editor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));
-    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(CursorPositionChanged()));
+    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(OnCursorPositionChanged()));
     connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(OnModificationChanged()));
 }
 

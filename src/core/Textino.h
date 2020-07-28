@@ -13,7 +13,7 @@
 #include <QMainWindow>                  // main window
 #include <Qsci/qscilexer.h>             // qscintilla lexer
 
-// Declaration for ready-to-show elements
+// Declaration for ready-to-show elementss
 class QLabel;           // label
 class QStatusBar;       // status bar (bottom of the main window)
 class QAction;          // qt gui application action signal
@@ -56,10 +56,10 @@ private slots:
     void Replace();     // find & replace
     void About();       // about info
     void Modified();    // text had been modified
-    void CursorPositionChanged();
-    void OnTextChanged();
-    void OnTextSelected();
-    void OnModificationChanged();
+    void OnCursorPositionChanged();  // update the current position of cursor
+    void OnTextChanged();            // update the text length and the number of line
+    void OnTextSelected();           // update if there is text is selected
+    void OnModificationChanged();    // update if the text is modified
     void SetFont();     // change font & size
 
 private:
@@ -92,11 +92,11 @@ private:
     FindDialog *find_dialog;
     ReplaceDialog *replace_dialog;
 
-    QStatusBar *status_bar;
-    QLabel *status_label;
-    QLabel *status_cursor_label;
-    QLabel *status_filepath_label;
-    QLabel *status_modification_label;
+    QStatusBar *status_bar;              // status bar
+    QLabel *status_label;                // the laber display the text length and number of line
+    QLabel *status_cursor_label;         // the laber display the cursor position
+    QLabel *status_filepath_label;       // the laber display the file path
+    QLabel *status_modification_label;   // the laber display whether the text is modified
 
 
     QAction *new_act;

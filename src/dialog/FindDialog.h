@@ -1,3 +1,11 @@
+//*  Filename: FindDialog.h
+//*  Created Date: 2020-07-25 15:34:39
+//*  Modified Date: 2020-07-28 11:05:46
+//*  Description:
+//*     Header files for find function.
+//*     A Class FindDialog
+
+
 #ifndef _FINDDIALOG_H_
 #define _FINDDIALOG_H_
 
@@ -47,8 +55,8 @@ protected:
 
     QPointer<QsciScintilla> text;
 
-    void initControl();
-    void connectSlot();
+    void initControl();    // initialize the interface of Find
+    void connectSlot();    // cnnect signals and slot functions
 
 public slots:
     void onFindClicked();
