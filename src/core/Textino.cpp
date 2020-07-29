@@ -2,8 +2,13 @@
 //*  Created Date: 2020-06-05 15:34:39
 //*  Modified Date: 2020-07-28 10:57:26
 //*  Description:
-//*     Main function module of the whole notepad
-//*     
+//*     Main function module of the whole notepad.
+//*     The implementation of the main class
+
+#include "../dialog/FindDialog.h"
+#include "../dialog/ReplaceDialog.h"
+#include "Textino.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -22,6 +27,7 @@
 #include <QToolBar>
 #include <QLabel>
 
+// qscintilla header files
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexercpp.h>
 #include <Qsci/qscilexerjava.h>
@@ -35,113 +41,131 @@
 #include <Qsci/qscilexerbash.h>
 #include <Qsci/qscilexerxml.h>
 
-#include "../dialog/FindDialog.h"
-#include "../dialog/ReplaceDialog.h"
-#include "Textino.h"
 
-Textino::Textino()
-{
-    config = new ConfigManager();
+// constructor
+Textino::Textino() {
+    config = new ConfigManager();   // initalize config manager
 
-    CreateMainEditor();
+    CreateMainEditor();             // create main editor 
 
-    find_dialog = new FindDialog(this, main_editor);
+    // initialize find functional dialogs
+    find_dialog = new FindDialog(this, main_editor);      
+    // initialize replace functional dialog  
     replace_dialog = new ReplaceDialog(this, main_editor);
 
-    CreateActions();
-    CreateMenus();
-    CreateToolBars();
-    CreateStatusBar();
+    CreateActions();                // create actions
+    CreateMenus();                  // create menus
+    CreateToolBars();               // create tool bars
+    CreateStatusBar();              // create status bars
 
+    // set application font
     QApplication::setFont(config->GetDefaultFont());
 }
 
-Textino::~Textino() {
+// deconstructor: null implementation
+Textino::~Textino() {}
 
-}
-
-
+// create main editor
 void Textino::CreateMainEditor() {
-    main_editor = new QsciScintilla();
+    main_editor = new QsciScintilla();  // qscintilla as the main editor
+    setCentralWidget(main_editor);      // qscintilla editor as the central part
 
-    setCentralWidget(main_editor);  // qscintilla editor as the central part
+    // connect content-changed signal to SLOT function
+    connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    
 
-    connect(main_editor, SIGNAL(textChanged()), this, SLOT(Modified()));    // modified slot
+    main_editor->setMarginType(0, QsciScintilla::NumberMargin); // left margin content
+    main_editor->setMarginsFont(config->GetDefaultFont());      // editor margin font
+    main_editor->setMarginWidth(0, 45);                         // left margin width
+    main_editor->setTabWidth(4);                                // set tab policy to 4 spaces
+    main_editor->setTabIndents(true);                           // set tab button for indents
 
-    main_editor->setMarginType(0, QsciScintilla::NumberMargin);             // left margin content
-    main_editor->setMarginsFont(config->GetDefaultFont());
-    main_editor->setMarginWidth(0, 45);                                     // left margin width
-    main_editor->setTabWidth(4);
-    main_editor->setTabIndents(true);
-
-
+    // set UTF-8 as qscintilla encoding policy
     main_editor->SendScintilla(QsciScintilla::SCI_SETCODEPAGE, QsciScintilla::SC_CP_UTF8);
+    // set qscintilla auto indentation policy
     main_editor->setIndentationGuides(QsciScintilla::SC_IV_LOOKBOTH);
     main_editor->setCaretLineVisible(true);                 // line number visible
     QColor line_color = QColor(Qt::green).lighter(195);     // line highlighting color
-    main_editor->setCaretLineBackgroundColor(line_color);
+    main_editor->setCaretLineBackgroundColor(line_color);   // main editor set background color
     main_editor->setWrapMode(QsciScintilla::WrapWord);      // set content wrap
 
     setWindowIcon(QIcon(":/imgs/icon.png"));                // main icon
     resize(1280, 720);                                      // main size
 
-    main_editor->setFont(config->GetFont());
-    SetCurrentFile("");
+    main_editor->setFont(config->GetFont());                // main editor font
+    SetCurrentFile("");                                     // untitled text
 }
 
-void Textino::CreateActions()
-{
+// create actions:
+//  1. set corresponding labels and icons
+//  2. set shortcut
+//  3. connect slot signals
+void Textino::CreateActions() {
+    
+    // new file
     new_act = new QAction(QIcon(":/imgs/new.png"), tr("&New"), this);
     new_act->setShortcut(tr("Ctrl+N"));
     connect(new_act, SIGNAL(triggered()), this, SLOT(NewFile()));
 
+    // open file
     open_act = new QAction(QIcon(":/imgs/open.png"), tr("&Open..."), this);
     open_act->setShortcut(tr("Ctrl+O"));
     connect(open_act, SIGNAL(triggered()), this, SLOT(Open()));
 
+    // save file
     save_act = new QAction(QIcon(":/imgs/save.png"), tr("&Save"), this);
     save_act->setShortcut(tr("Ctrl+S"));
     connect(save_act, SIGNAL(triggered()), this, SLOT(Save()));
 
+    // save file as ...
     save_as_act = new QAction(QIcon(":/imgs/save-as.png"), tr("Save &As..."), this);
     save_as_act->setShortcut(tr("Ctrl+Shift+S"));
     connect(save_as_act, SIGNAL(triggered()), this, SLOT(SaveAs()));
 
+    // exit
     exit_act = new QAction(QIcon(":/imgs/exit.png"), tr("E&xit"), this);
     exit_act->setShortcut(tr("Ctrl+W"));
     connect(exit_act, SIGNAL(triggered()), this, SLOT(close()));
 
+    //cut
     cut_act = new QAction(QIcon(":/imgs/cut.png"), tr("Cu&t"), this);
     cut_act->setShortcut(tr("Ctrl+X"));
     connect(cut_act, SIGNAL(triggered()), main_editor, SLOT(cut()));
 
+    // copy
     copy_act = new QAction(QIcon(":/imgs/copy.png"), tr("&Copy"), this);
     copy_act->setShortcut(tr("Ctrl+C"));
     connect(copy_act, SIGNAL(triggered()), main_editor, SLOT(copy()));
 
+    // paste
     paste_act = new QAction(QIcon(":/imgs/paste.png"), tr("&Paste"), this);
     paste_act->setShortcut(tr("Ctrl+V"));
     connect(paste_act, SIGNAL(triggered()), main_editor, SLOT(paste()));
 
+    // undo
     undo_act = new QAction(QIcon(":/imgs/undo.png"), tr("&Undo"), this);
     undo_act->setShortcut(tr("Ctrl+Z"));
     connect(undo_act, SIGNAL(triggered()), main_editor, SLOT(undo()));
 
+    // redo
     redo_act = new QAction(QIcon(":/imgs/redo.png"), tr("&Rndo"), this);
     redo_act->setShortcut(tr("Ctrl+Shift+Z"));
     connect(redo_act, SIGNAL(triggered()), main_editor, SLOT(redo()));
 
+    // find
     find_act = new QAction(QIcon(":/imgs/find.png"), tr("&Find"), this);
     find_act->setShortcut(tr("Ctrl+F"));
     connect(find_act, SIGNAL(triggered()), this, SLOT(Find()));
 
+    // replace
     replace_act = new QAction(QIcon(":/imgs/replace.png"), tr("&Replace"), this);
     replace_act->setShortcut(tr("Ctrl+R"));
     connect(replace_act, SIGNAL(triggered()), this, SLOT(Replace()));
 
+    // about
     about_act = new QAction(QIcon(":/imgs/about.png"), tr("&About"), this);
     connect(about_act, SIGNAL(triggered()), this, SLOT(About()));
 
+    // 
     settings_act = new QAction(QIcon(":/imgs/settings.png"), tr("&Settings"), this);
     settings_act->setShortcut(tr("Ctrl+Shift+P"));
     connect(settings_act, SIGNAL(triggered()), this, SLOT(SetFont()));

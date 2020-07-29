@@ -81,38 +81,39 @@ private:
     QsciLexer *text_lexer;      // current language lexer
     ConfigManager *config;
 
-    QMenu *file_menu;   // file menus
-    QMenu *edit_menu;   // edit menus
-    QMenu *help_menu;   // help menus
+    QMenu *file_menu;           // file menus
+    QMenu *edit_menu;           // edit menus
+    QMenu *help_menu;           // help menus
 
-    QToolBar *file_tool_bar;    // tool bars
-    QToolBar *edit_tool_bar;
-    QToolBar *help_tool_bar;
+    QToolBar *file_tool_bar;    // file tool bar
+    QToolBar *edit_tool_bar;    // edit tool bar
+    QToolBar *help_tool_bar;    // help too bar
 
-    FindDialog *find_dialog;
-    ReplaceDialog *replace_dialog;
+    FindDialog *find_dialog;    // find dialog
+    ReplaceDialog *replace_dialog;      // find & replace dialog 
 
-    QStatusBar *status_bar;              // status bar
-    QLabel *status_label;                // the laber display the text length and number of line
-    QLabel *status_cursor_label;         // the laber display the cursor position
-    QLabel *status_filepath_label;       // the laber display the file path
-    QLabel *status_modification_label;   // the laber display whether the text is modified
+    QStatusBar *status_bar;             // status bar
+    QLabel *status_label;               // the laber display the text length and number of line
+    QLabel *status_cursor_label;        // the laber display the cursor position
+    QLabel *status_filepath_label;      // the laber display the file path
+    QLabel *status_modification_label;  // the laber display whether the text is modified
 
 
-    QAction *new_act;
-    QAction *open_act;
-    QAction *save_act;
-    QAction *save_as_act;
-    QAction *exit_act;
-    QAction *cut_act;
-    QAction *copy_act;
-    QAction *paste_act;
-    QAction *about_act;
-    QAction *redo_act;
-    QAction *undo_act;
-    QAction *find_act;
-    QAction *replace_act;
-    QAction *settings_act;
+    // qt actions interacting with the GUI elements
+    QAction *new_act;           // new file
+    QAction *open_act;          // open file
+    QAction *save_act;          // save file
+    QAction *save_as_act;       // save file as
+    QAction *exit_act;          // exit application
+    QAction *cut_act;           // cut contents
+    QAction *copy_act;          // copy contents
+    QAction *paste_act;         // paste contents
+    QAction *about_act;         // open about message
+    QAction *redo_act;          // redo last step that has been withdrawn
+    QAction *undo_act;          // undo last step
+    QAction *find_act;          // find
+    QAction *replace_act;       // find & replace
+    QAction *settings_act;      // open settings
 };
 
 #endif
