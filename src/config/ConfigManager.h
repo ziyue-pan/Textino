@@ -6,8 +6,8 @@
 #include <QSettings>
 #include <QCoreApplication>
 
-class ConfigManager
-{
+class ConfigManager {
+    
 private:
     // default configuration file path
     const QString config_path = QCoreApplication::applicationDirPath() 

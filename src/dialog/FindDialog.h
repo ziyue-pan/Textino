@@ -23,50 +23,50 @@
 #include <QMessageBox>
 
 #include <Qsci/qsciscintilla.h>
-#include <Qsci/qscilexercpp.h>
-#include <Qsci/qscilexerjava.h>
-#include <Qsci/qscilexerjavascript.h>
-#include <Qsci/qscilexerpython.h>
-#include <Qsci/qscilexerverilog.h>
-#include <Qsci/qscilexersql.h>
-#include <Qsci/qscilexer.h>
 
 
 #include "../ui/LineEdit.h"
 
-class FindDialog : public QDialog
-{
+class FindDialog : public QDialog {
     Q_OBJECT
 
 protected:
-    QGroupBox *radio_group_box;
+    // UI elements
+    QGroupBox *radio_group_box;     // group box
 
-    QGridLayout *layout;
-    QHBoxLayout *h_box_layout;
+    QGridLayout *layout;            // grid layout
+    QHBoxLayout *h_box_layout;      // horizontal layout
 
-    QLabel *find_label;
-    LineEdit *find_edit; 
-    QPushButton *find_btn;
-    QPushButton *cancel_btn;
-    QCheckBox *match_check_box;
-    QRadioButton *upward_btn;
-    QRadioButton *downward_btn;
+    QLabel *find_label;             // label
+    LineEdit *find_edit;            // enter box (input box)
+    QPushButton *find_btn;          // find button
+    QPushButton *cancel_btn;        // cancel button
+    QCheckBox *match_check_box;     // check box
+    QRadioButton *upward_btn;       // upward
+    QRadioButton *downward_btn;     // downward
 
+    // Qscintilla text content
     QPointer<QsciScintilla> text;
 
-    void InitControl();    // initialize the interface of Find
-    void ConnectSlot();    // cnnect signals and slot functions
+    void InitControl();     // initialize the interface of Find
+    void ConnectSlot();     // cnnect signals and slot functions
 
 public slots:
-    void FindClicked();
-    void CancelClicked();
+    void FindClicked();     // find clicked
+    void CancelClicked();   // cancel clicked
 
 public:
     FindDialog(QWidget *parent = nullptr, QsciScintilla *pText = nullptr);
-    void SetQsciScintilla(QsciScintilla *pText);
-    QsciScintilla * GetQsciScintilla();
-    bool event(QEvent *e);
     ~FindDialog();
+
+    // set qscintilla
+    void SetQsciScintilla(QsciScintilla *pText);
+    // get text content
+    QsciScintilla * GetQsciScintilla();
+
+    // override event function
+    bool event(QEvent *e);
+    
 };
 
 #endif

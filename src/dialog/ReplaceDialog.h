@@ -16,17 +16,17 @@ class ReplaceDialog : public FindDialog {
     Q_OBJECT
 
 protected:
-    QLabel *replace_label;
-    LineEdit *replace_edit;
-    QPushButton *replace_btn;
-    QPushButton *replace_all_btn;
+    QLabel *replace_label;          // replace label
+    LineEdit *replace_edit;         // input box
+    QPushButton *replace_btn;       // replace button
+    QPushButton *replace_all_btn;   // replace all button
 
-    void InitControl();
-    void ConnectSlot();
+    void InitControl();             // initialize
+    void ConnectSlot();             // config slots
 
 protected slots:
-    void ReplaceClicked();
-    void ReplaceAllClicked();
+    void ReplaceClicked();          // replace clicked
+    void ReplaceAllClicked();       // replace all clicked
 
 public:
     ReplaceDialog(QWidget* parent = nullptr, QsciScintilla* pText = nullptr);
