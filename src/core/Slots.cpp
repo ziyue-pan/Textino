@@ -105,18 +105,18 @@ void Textino::Replace() {
 }
 
 
-void Textino::OnCursorPositionChanged() {
+void Textino::CursorPositionChanged() {
     int col = 0;
     int ln = 0;
     main_editor->getCursorPosition(&ln,&col);
     status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 }
 
-void Textino::OnTextChanged() {
+void Textino::TextChanged() {
     status_label->setText("length: " + QString::number(main_editor->text().length()) + "    lines: " + QString::number(main_editor->lines()));
 }
 
-void Textino::OnTextSelected() {
+void Textino::TextSelected() {
     int col = 0;
     int ln = 0;
     main_editor->getCursorPosition(&ln,&col);
@@ -126,7 +126,7 @@ void Textino::OnTextSelected() {
         status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 } 
 
-void Textino::OnModificationChanged() {
+void Textino::ModificationChanged() {
     if (main_editor->isModified())
         status_modification_label->setText("modified");
     else

@@ -262,7 +262,7 @@ void Textino::CreateStatusBar() {
 
     // set status modification alignment
     status_modification_label->setAlignment(Qt::AlignCenter);
-    OnModificationChanged();
+    ModificationChanged();
     // add modification label
     status_bar->addPermanentWidget(status_modification_label);
 
@@ -271,21 +271,21 @@ void Textino::CreateStatusBar() {
     // alignment: center
     status_cursor_label->setMinimumWidth(150);
     status_cursor_label->setAlignment(Qt::AlignCenter);
-    OnCursorPositionChanged();
+    CursorPositionChanged();
     status_bar->addPermanentWidget(status_cursor_label);
 
     // add status bar center widget
     status_bar->addPermanentWidget(new QLabel());
     status_label->setMinimumWidth(150);
     status_label->setAlignment(Qt::AlignCenter);
-    OnTextChanged();
+    TextChanged();
     status_bar->addPermanentWidget(status_label);
 
     // connect signals to slot function
-    connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(OnTextSelected()));
-    connect(main_editor, SIGNAL(textChanged()), this, SLOT(OnTextChanged()));
-    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(OnCursorPositionChanged()));
-    connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(OnModificationChanged()));
+    connect(main_editor, SIGNAL(copyAvailable(bool)), this, SLOT(TextSelected()));
+    connect(main_editor, SIGNAL(textChanged()), this, SLOT(TextChanged()));
+    connect(main_editor, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(CursorPositionChanged()));
+    connect(main_editor, SIGNAL(modificationChanged(bool)), this, SLOT(ModificationChanged()));
 }
 
 // current content changed

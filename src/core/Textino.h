@@ -33,8 +33,7 @@ class QsciScintilla;    // qscintilla class
 //              main_application.show();
 //              return main_application.exec();
 //          }           
-class Textino : public QMainWindow
-{
+class Textino : public QMainWindow {
     Q_OBJECT            // Q_OBJECT attribute
 
 public:
@@ -56,10 +55,10 @@ private slots:
     void Replace();     // find & replace
     void About();       // about info
     void Modified();    // text had been modified
-    void OnCursorPositionChanged();  // update the current position of cursor
-    void OnTextChanged();            // update the text length and the number of line
-    void OnTextSelected();           // update if there is text is selected
-    void OnModificationChanged();    // update if the text is modified
+    void CursorPositionChanged();  // update the current position of cursor
+    void TextChanged();            // update the text length and the number of line
+    void TextSelected();           // update if there is text is selected
+    void ModificationChanged();    // update if the text is modified
     void SetFont();     // change font & size
 
 private:
