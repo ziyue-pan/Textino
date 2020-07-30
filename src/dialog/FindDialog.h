@@ -27,6 +27,14 @@
 
 #include "../ui/LineEdit.h"
 
+//@ Class:  FindDialog
+//@ Description:
+//          Work as the find windows of GUI application.
+//@ Usage:
+//          FindDialog dialog;   
+//          dialog.show();  
+
+
 class FindDialog : public QDialog {
     Q_OBJECT
 

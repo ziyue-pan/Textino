@@ -11,6 +11,13 @@
 #include "FindDialog.h"
 #include "../ui/LineEdit.h"
 
+//@ Class:  FindDialog
+//@ Description:
+//          Work as the replace windows of GUI application.
+//@ Usage:
+//          ReplaceDialog dialog;   
+//          dialog.show();  
+
 class ReplaceDialog : public FindDialog {
     
     Q_OBJECT

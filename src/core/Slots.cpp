@@ -104,7 +104,7 @@ void Textino::Replace() {
     replace_dialog->show();
 }
 
-
+// corresponding cursor position change event
 void Textino::CursorPositionChanged() {
     int col = 0;
     int ln = 0;
@@ -112,10 +112,12 @@ void Textino::CursorPositionChanged() {
     status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 }
 
+// corresponding text change event
 void Textino::TextChanged() {
     status_label->setText("length: " + QString::number(main_editor->text().length()) + "    lines: " + QString::number(main_editor->lines()));
 }
 
+// corresponding text selected event
 void Textino::TextSelected() {
     int col = 0;
     int ln = 0;
@@ -126,6 +128,7 @@ void Textino::TextSelected() {
         status_cursor_label->setText("Ln: " + QString::number(ln + 1) + "    Col: " + QString::number(col + 1));
 } 
 
+// corresponding modification changed event
 void Textino::ModificationChanged() {
     if (main_editor->isModified())
         status_modification_label->setText("modified");
@@ -133,6 +136,7 @@ void Textino::ModificationChanged() {
         status_modification_label->setText("");
 }
 
+// corresponding set font event
 void Textino::SetFont() {
     bool selected = false;
     QFont given_font = QFontDialog::getFont(&selected, config->GetFont(), this, "Select Fonts");

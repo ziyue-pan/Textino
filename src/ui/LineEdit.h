@@ -17,7 +17,7 @@ class LineEdit:public QLineEdit {
     public:
         LineEdit(QWidget * parent = 0);
     protected: 
-        // keyPressEvent 函数重载
+        // keyPressEvent override
         void keyPressEvent(QKeyEvent * event);
 };
 

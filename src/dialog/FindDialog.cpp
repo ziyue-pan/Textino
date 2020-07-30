@@ -13,6 +13,7 @@ FindDialog::FindDialog(QWidget *parent, QsciScintilla *pText):
     InitControl();
     ConnectSlot();
     setLayout(layout);
+    // set size
     setFixedSize(600,250);
     setWindowTitle("Find");
 
@@ -20,6 +21,8 @@ FindDialog::FindDialog(QWidget *parent, QsciScintilla *pText):
 }
 
 void FindDialog::InitControl() {
+
+    // init some component
     find_edit = new LineEdit();
     find_label = new QLabel("Target: ");
     find_btn = new QPushButton("Find next(&F)");
@@ -36,6 +39,7 @@ void FindDialog::InitControl() {
     h_box_layout->addWidget(downward_btn);
     radio_group_box->setLayout(h_box_layout);
 
+    // add component into layout
     layout->addWidget(find_label,0,0);
     layout->addWidget(find_edit,0,1);
     layout->addWidget(find_btn,0,2);
@@ -46,6 +50,7 @@ void FindDialog::InitControl() {
 
 }
 
+// connect signal with slot function
 void FindDialog::ConnectSlot() {
     connect(find_btn, SIGNAL(clicked()), this, SLOT(FindClicked()));
     connect(cancel_btn, SIGNAL(clicked()), this, SLOT(CancelClicked()));
@@ -59,21 +64,23 @@ QsciScintilla * FindDialog::GetQsciScintilla() {
     return text;
 }
 
+// slot function, corresponding click event
 void FindDialog::FindClicked()
 {
     QString target = find_edit->text();
+    // if case sensitive
     bool case_sensitive = match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive;
     bool is_find = true;
     int ln, col;
     text->getCursorPosition(&ln, &col);
     if (( text != nullptr) && (target != "")){
         QString temp_text = text->text();
-        int index = -1;
 
         if (downward_btn->isChecked()){
 
+            // find the first target from the location (ln, col) 
             if ( ! text->findFirst(target, false, case_sensitive, false, true, true, ln , col) )
-                is_find = false;
+                is_find = false; // if not find 
         }
 
         if (upward_btn->isChecked()){
@@ -82,7 +89,8 @@ void FindDialog::FindClicked()
                 is_find = false;
         }
 
-        if (! is_find){
+        // if not find, send massage
+        if (! is_find){ 
             QMessageBox msg(this);
             msg.setWindowTitle("notepad");
             msg.setText(QString("cann't find ") + "\"" + target + "\"");

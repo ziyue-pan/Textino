@@ -7,7 +7,7 @@
 #include"LineEdit.h"
 #include<QKeyEvent>
 
-// QLineEdit 重载
+// QLineEdit override
 LineEdit::LineEdit(QWidget* parent):QLineEdit(parent)
 {
     setFocusPolicy(Qt::StrongFocus);
