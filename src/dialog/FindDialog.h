@@ -66,8 +66,6 @@ public:
     void SetQsciScintilla(QsciScintilla *pText);
     QsciScintilla * GetQsciScintilla();
     bool event(QEvent *e);
-    int GetCursorIndex();
-    void SetCursorIndex(int index, bool direction);
     ~FindDialog();
 };
 

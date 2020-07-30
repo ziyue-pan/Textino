@@ -59,61 +59,30 @@ QsciScintilla * FindDialog::GetQsciScintilla() {
     return text;
 }
 
-int FindDialog::GetCursorIndex() {
-    int col, ln;
-    text->getCursorPosition(&ln, &col);
-    int index = 0;
-    for (int i=0; i<ln; i++)
-        index += text->lineLength(i);
-    index += col;
-    return index;
-}
-
-void FindDialog::SetCursorIndex(int index, bool direction) {
-    int col = 0;
-    int ln = 0;
-    int flg = -1;
-    int pos = index;
-    QString temp_text = text->text();
-    QString target = find_edit->text();
-    
-    for(int i=0; i<pos; i++){
-        if( temp_text[i] == '\n' ) {
-            ln ++;
-            flg = i;
-        }
-    }
-    flg ++;
-    col = pos - flg;
-    if (direction)
-        text->setSelection(ln, col, ln, col + target.length());
-    else
-        text->setSelection(ln, col + target.length(), ln, col);
-
-}
-
 void FindDialog::FindClicked()
 {
     QString target = find_edit->text();
+    bool case_sensitive = match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    bool is_find = true;
+    int ln, col;
+    text->getCursorPosition(&ln, &col);
     if (( text != nullptr) && (target != "")){
         QString temp_text = text->text();
         int index = -1;
 
         if (downward_btn->isChecked()){
-            index = temp_text.indexOf(target, GetCursorIndex() + target.length(),  match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
-            if (index >= 0){
-                SetCursorIndex(index, true);  
-            }
+
+            if ( ! text->findFirst(target, false, case_sensitive, false, true, true, ln , col) )
+                is_find = false;
         }
 
         if (upward_btn->isChecked()){
-            index = temp_text.lastIndexOf(target, text->selectedText().length() == 0 ? GetCursorIndex() - temp_text.length() - 1 : GetCursorIndex() - temp_text.length() - 1 - target.length(), match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
-            if (index >= 0){
-                SetCursorIndex(index, false);  
-            }
+
+            if ( ! text->findFirst(target, false, case_sensitive, false, true, false, ln, col - target.length()) )
+                is_find = false;
         }
 
-        if (index < 0){
+        if (! is_find){
             QMessageBox msg(this);
             msg.setWindowTitle("notepad");
             msg.setText(QString("cann't find ") + "\"" + target + "\"");
