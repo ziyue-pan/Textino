@@ -48,11 +48,12 @@ void ReplaceDialog::ReplaceClicked()
 {
     QString target = find_edit->text();
     QString to = replace_edit->text();
+    bool case_sensitive = match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive;
 
     if( (text != nullptr) && (target != "") && (to != "") )
     {
         QString selText = text->selectedText();
-        if( selText == target )
+        if( selText == target || ( !case_sensitive && selText.toLower() == target.toLower()))
             text->replaceSelectedText(to);
         FindClicked();
     }
