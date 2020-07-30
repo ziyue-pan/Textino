@@ -11,8 +11,7 @@
 #include "FindDialog.h"
 #include "../ui/LineEdit.h"
 
-class ReplaceDialog : public FindDialog
-{
+class ReplaceDialog : public FindDialog {
     
     Q_OBJECT
 
@@ -22,12 +21,12 @@ protected:
     QPushButton *replace_btn;
     QPushButton *replace_all_btn;
 
-    void initControl();
-    void connectSlot();
+    void InitControl();
+    void ConnectSlot();
 
 protected slots:
-    void onReplaceClicked();
-    void onReplaceAllClicked();
+    void ReplaceClicked();
+    void ReplaceAllClicked();
 
 public:
     ReplaceDialog(QWidget* parent = nullptr, QsciScintilla* pText = nullptr);

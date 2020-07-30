@@ -1,9 +1,13 @@
-/*
- * Created Date: Friday, June 5th 2020, 3:34:39 pm
- * Author: Raymond Rhino
- * 
- * Copyright (c) 2020 Textino
- */
+//*  Filename: Slots.cpp
+//*  Created Date: 2020-06-05 15:34:39
+//*  Modified Date: 2020-07-30 00:40:24
+//*  Description:
+//*     implementation of all slot functions
+
+#include "../dialog/FindDialog.h"
+#include "../dialog/ReplaceDialog.h"
+#include "Textino.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
@@ -31,11 +35,8 @@
 #include <Qsci/qscilexerverilog.h>
 #include <Qsci/qscilexersql.h>
 
-#include "../dialog/FindDialog.h"
-#include "../dialog/ReplaceDialog.h"
-#include "Textino.h"
-
-
+// override close event:
+//  prompt save query and dicide whether to exit
 void Textino::closeEvent(QCloseEvent *event) {
     if (MaybeSave()) {
         event->accept();
@@ -44,6 +45,7 @@ void Textino::closeEvent(QCloseEvent *event) {
     }
 }
 
+// create new file
 void Textino::NewFile() {
     if (MaybeSave()) {
         main_editor->clear();
@@ -52,33 +54,39 @@ void Textino::NewFile() {
     }
 }
 
+// open file
 void Textino::Open() {
     if (MaybeSave()) {
         QString file_name = QFileDialog::getOpenFileName(this);
         if (!file_name.isEmpty())
-            LoadFile(file_name);
+            LoadFile(file_name);    // call LoadFile()
     }
 }
 
+// save
 bool Textino::Save() {
     if (current_path.isEmpty()) {
-        return SaveAs();
+        return SaveAs();            // if untitled
+                                    // just save as
     } else {
         return SaveFile(current_path);
     }
 }
 
-
+// set modified
 void Textino::Modified() {
     setWindowModified(main_editor->isModified());
 }
 
+// prompt about info
+//TODO: add github link, but fail to display
 void Textino::About() {
    QMessageBox::about(this, tr("About Textino"),
             tr("<b>Textino</b> is an extremely light text editor, \
             written by <a herf='https://github.com/PAN-Ziyue/Textino'>Raymond Ziyue</a>"));
 }
 
+// save as
 bool Textino::SaveAs() {
     QString file_name = QFileDialog::getSaveFileName(this);
     if (file_name.isEmpty())
@@ -86,13 +94,16 @@ bool Textino::SaveAs() {
     return SaveFile(file_name);
 }
 
+// find dialog
 void Textino::Find() {
     find_dialog->show();
 }
 
+// replace dialog
 void Textino::Replace() {
     replace_dialog->show();
 }
+
 
 void Textino::OnCursorPositionChanged() {
     int col = 0;

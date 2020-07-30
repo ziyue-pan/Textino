@@ -5,7 +5,6 @@
 //*     Header files for find function.
 //*     A Class FindDialog
 
-
 #ifndef _FINDDIALOG_H_
 #define _FINDDIALOG_H_
 
@@ -55,20 +54,20 @@ protected:
 
     QPointer<QsciScintilla> text;
 
-    void initControl();    // initialize the interface of Find
-    void connectSlot();    // cnnect signals and slot functions
+    void InitControl();    // initialize the interface of Find
+    void ConnectSlot();    // cnnect signals and slot functions
 
 public slots:
-    void onFindClicked();
-    void onCancelClicked();
+    void FindClicked();
+    void CancelClicked();
 
 public:
     FindDialog(QWidget *parent = nullptr, QsciScintilla *pText = nullptr);
-    void setQsciScintilla(QsciScintilla *pText);
-    QsciScintilla * getQsciScintilla();
+    void SetQsciScintilla(QsciScintilla *pText);
+    QsciScintilla * GetQsciScintilla();
     bool event(QEvent *e);
-    int getCursorIndex();
-    void setCursorIndex(int index, bool direction);
+    int GetCursorIndex();
+    void SetCursorIndex(int index, bool direction);
     ~FindDialog();
 };
 

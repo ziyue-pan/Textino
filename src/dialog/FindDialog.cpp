@@ -7,20 +7,19 @@
 
 #include "FindDialog.h"
 
-FindDialog::FindDialog(QWidget *parent, QsciScintilla *pText) : QDialog (parent, Qt::WindowCloseButtonHint | Qt::Drawer)
-{
-    initControl();
-    connectSlot();
-
+FindDialog::FindDialog(QWidget *parent, QsciScintilla *pText): 
+    QDialog (parent, Qt::WindowCloseButtonHint | Qt::Drawer) {
+    
+    InitControl();
+    ConnectSlot();
     setLayout(layout);
     setFixedSize(600,250);
     setWindowTitle("Find");
 
-    setQsciScintilla(pText);
+    SetQsciScintilla(pText);
 }
 
-void FindDialog::initControl()
-{
+void FindDialog::InitControl() {
     find_edit = new LineEdit();
     find_label = new QLabel("Target: ");
     find_btn = new QPushButton("Find next(&F)");
@@ -47,24 +46,20 @@ void FindDialog::initControl()
 
 }
 
-void FindDialog::connectSlot()
-{
-    connect(find_btn, SIGNAL(clicked()), this, SLOT(onFindClicked()));
-    connect(cancel_btn, SIGNAL(clicked()), this, SLOT(onCancelClicked()));
+void FindDialog::ConnectSlot() {
+    connect(find_btn, SIGNAL(clicked()), this, SLOT(FindClicked()));
+    connect(cancel_btn, SIGNAL(clicked()), this, SLOT(CancelClicked()));
 }
 
-void FindDialog::setQsciScintilla(QsciScintilla *pText)
-{
+void FindDialog::SetQsciScintilla(QsciScintilla *pText) {
     text = pText;
 }
 
-QsciScintilla * FindDialog::getQsciScintilla()
-{
+QsciScintilla * FindDialog::GetQsciScintilla() {
     return text;
 }
 
-int FindDialog::getCursorIndex()
-{
+int FindDialog::GetCursorIndex() {
     int col, ln;
     text->getCursorPosition(&ln, &col);
     int index = 0;
@@ -74,16 +69,16 @@ int FindDialog::getCursorIndex()
     return index;
 }
 
-void FindDialog::setCursorIndex(int index, bool direction)
-{
+void FindDialog::SetCursorIndex(int index, bool direction) {
     int col = 0;
     int ln = 0;
     int flg = -1;
     int pos = index;
     QString temp_text = text->text();
     QString target = find_edit->text();
+    
     for(int i=0; i<pos; i++){
-        if( temp_text[i] == '\n' ){
+        if( temp_text[i] == '\n' ) {
             ln ++;
             flg = i;
         }
@@ -97,7 +92,7 @@ void FindDialog::setCursorIndex(int index, bool direction)
 
 }
 
-void FindDialog::onFindClicked()
+void FindDialog::FindClicked()
 {
     QString target = find_edit->text();
     if (( text != nullptr) && (target != "")){
@@ -105,16 +100,16 @@ void FindDialog::onFindClicked()
         int index = -1;
 
         if (downward_btn->isChecked()){
-            index = temp_text.indexOf(target, getCursorIndex() + target.length(),  match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
+            index = temp_text.indexOf(target, GetCursorIndex() + target.length(),  match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
             if (index >= 0){
-                setCursorIndex(index, true);  
+                SetCursorIndex(index, true);  
             }
         }
 
         if (upward_btn->isChecked()){
-            index = temp_text.lastIndexOf(target, text->selectedText().length() == 0 ? getCursorIndex() - temp_text.length() - 1 : getCursorIndex() - temp_text.length() - 1 - target.length(), match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
+            index = temp_text.lastIndexOf(target, text->selectedText().length() == 0 ? GetCursorIndex() - temp_text.length() - 1 : GetCursorIndex() - temp_text.length() - 1 - target.length(), match_check_box->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive);
             if (index >= 0){
-                setCursorIndex(index, false);  
+                SetCursorIndex(index, false);  
             }
         }
 
@@ -130,7 +125,7 @@ void FindDialog::onFindClicked()
     }
 }
 
-void FindDialog::onCancelClicked()
+void FindDialog::CancelClicked()
 {
     close();
 }

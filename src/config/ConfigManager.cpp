@@ -110,8 +110,3 @@ QFont ConfigManager::GetDefaultFont() {
     font.setUnderline(false);
     return font;
 }
-
-
-
-
-

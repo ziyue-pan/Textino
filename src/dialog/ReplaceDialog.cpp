@@ -6,13 +6,13 @@
 
 #include "ReplaceDialog.h"
 
-ReplaceDialog::ReplaceDialog(QWidget* parent, QsciScintilla* pText) : FindDialog (parent, pText)
-{
-    initControl();
-    connectSlot();
+ReplaceDialog::ReplaceDialog(QWidget* parent, QsciScintilla* pText)
+    : FindDialog (parent, pText) {
+    InitControl();
+    ConnectSlot();
 }
 
-void ReplaceDialog::initControl()
+void ReplaceDialog::InitControl()
 {
     replace_label = new QLabel("Replace");
     replace_btn = new QPushButton("Replace(&R)");
@@ -38,13 +38,13 @@ void ReplaceDialog::initControl()
     setLayout(layout);
 }
 
-void ReplaceDialog::connectSlot()
+void ReplaceDialog::ConnectSlot()
 {
-    connect(replace_btn, SIGNAL(clicked()), this, SLOT(onReplaceClicked()));
-    connect(replace_all_btn, SIGNAL(clicked()), this, SLOT(onReplaceAllClicked()));
+    connect(replace_btn, SIGNAL(clicked()), this, SLOT(ReplaceClicked()));
+    connect(replace_all_btn, SIGNAL(clicked()), this, SLOT(ReplaceAllClicked()));
 }
 
-void ReplaceDialog::onReplaceClicked()
+void ReplaceDialog::ReplaceClicked()
 {
     QString target = find_edit->text();
     QString to = replace_edit->text();
@@ -54,11 +54,11 @@ void ReplaceDialog::onReplaceClicked()
         QString selText = text->selectedText();
         if( selText == target )
             text->replaceSelectedText(to);
-        onFindClicked();
+        FindClicked();
     }
 }
 
-void ReplaceDialog::onReplaceAllClicked()
+void ReplaceDialog::ReplaceAllClicked()
 {
     QString target = find_edit->text();
     QString to = replace_edit->text();
